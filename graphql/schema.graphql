@@ -1,0 +1,87 @@
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+type Query {
+    monkeys: [Monkey] @all
+    monkey(id: Int! @eq): Monkey @find
+    figures(experiment_id: Int @eq): [Figure] @all
+    figure_results(experiment_id: Int @eq): [FigureResult] @all
+    files(monkey_id: Int @eq, where: _ @whereHasConditions(relation: "experiment",columns: ["number"])): [File] @all
+}
+
+type FigureResult {
+    id: ID
+    figure_id: Int
+    experiment_id: Int,
+    x:Int,
+    y:Int
+    w:Int
+    h:Int
+    reaction_time: Float
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+type File {
+    id: ID,
+    name: String
+    experiment: Experiment @belongsTo
+    monkey: Monkey @belongsTo
+}
+
+type Monkey {
+    id: ID,
+    created_at: DateTime,
+    updated_at: DateTime,
+    name: String
+    elvis_id: String
+    age: Int
+    weight: Float
+    comment: String
+    experiments: [Experiment] @hasMany
+}
+
+type Experiment {
+    id: ID
+    monkey_id: Int
+    number: Int
+    name: String
+    created_at:DateTime
+    updated_at:DateTime
+    monkey: Monkey @belongsTo
+}
+
+type Result {
+    id: ID
+    figure_id: Int
+    experiment_id: Int
+    reaction_time: Float
+    created_at:DateTime
+    updated_at:DateTime
+}
+
+type Figure {
+    id: ID
+    x: Int
+    y: Int
+    w: Int
+    h: Int,
+    xx: String
+    yy: String
+    ww: String
+    hh: String
+    color: String
+    brightness: Int
+    created_at:DateTime
+    updated_at:DateTime
+    experiment_id: Int
+    name: String
+    reaction_time:Float
+    size_min: Int
+    size_max: Int
+    brightness_min: Int
+    brightness_max: Int
+    angle: Int
+    angles: String
+    colors: String
+}

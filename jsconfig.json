@@ -1,0 +1,14 @@
+{
+    "_comment": "This file is used to trick IntelliJ/Webstorm/PHPStorm to use the correct alias as defined in vite.config.js",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["resources/js/*"],
+            "~bootstrap/*": ["node_modules/bootstrap/*"],
+            "@assets/*": ["resources/assets/*"],
+            "@images/*": ["resources/assets/images/*"],
+            "@components": ["resources/js/components/*"],
+            "@mixins/*": ["resources/js/mixins/*"]
+        }
+    }
+}

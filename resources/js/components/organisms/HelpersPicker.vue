@@ -1,0 +1,141 @@
+<script setup>
+
+import {computed, onMounted, ref, watch} from "vue";
+import {he} from "vuetify/locale";
+
+const model = defineModel()
+const crntType = ref( {
+        type: '',
+        thickness: 0,
+        brightness: 0
+})
+const helpers = ref([])
+const types = ref({
+    'ramka': {
+        type: 'ramka',
+        click: false,
+        thickness: 0,
+        brightness: 0
+    },
+    'oblast': {
+        type: 'oblast',
+        click: false,
+        thickness: 0,
+        brightness: 0
+    },
+    'none': {
+        type: 'none',
+        click: false,
+        thickness: 0,
+        brightness: 0
+    }
+})
+
+let getStyleButton = function (t) {
+    let styles = {
+        'ramka': 'width: 27px; height: 27px;',
+        'oblast': 'width: 27px; height: 27px;',
+        'none': 'width: 120px; height: 27px;'
+    }
+    if (types.value[t].click) {
+        return styles[t] + 'background-color:red;'
+    }
+
+    return styles[t]
+}
+onMounted(() => {
+    console.log(model.value)
+})
+
+watch(()=>helpers.value.length, (newVal, oldVal) => {
+    model.value = helpers.value
+}, {deep: true})
+
+watch(crntType, ()=>{
+    let obj = model.value.at(model.value.length-1);
+    obj = {...obj, ...crntType.value}
+    model.value[model.value.length-1] = obj
+}, {deep: true})
+let btnHandler = function (type) {
+    types.value[type].click = !types.value[type].click
+    let index = helpers.value.findIndex(item => {
+        return item.type === type
+    })
+
+
+    if (types.value[type].click) {
+        if (index === -1) {
+            crntType.value = {type}
+            helpers.value.push({...crntType.value})
+        } else {
+            crntType.value = {...helpers.value.at(index)}
+        }
+
+    } else {
+        helpers.value.splice(index, 1)
+    }
+}
+
+</script>
+
+<template>
+    <div>
+        <div class="d-flex justify-center">
+            <v-card width="300" height="114" class="pa-2 shadow rounded1">
+                <div class="d-flex pa-4  justify-space-around">
+                    <button @click="btnHandler('oblast')" :style="getStyleButton('oblast')"
+                            class="v-btn v-btn--border v-btn--variant-outlined">
+                        <div class="pa-1">
+                            <div style="width: 15px; height: 15px;background-color: grey"></div>
+                        </div>
+                    </button>
+                    <button @click="btnHandler('ramka')" :style="getStyleButton('ramka')"
+                            class="v-btn v-btn--border v-btn--variant-outlined">
+                        <v-icon>mdi-square-rounded-outline</v-icon>
+                    </button>
+                    <button @click="btnHandler('none')" :style="getStyleButton('none')"
+                            class="v-btn--rounded v-btn--variant-outlined">
+                        Без подсказки
+                    </button>
+                </div>
+                <p class="text-center ">
+                    подсказки
+                </p>
+            </v-card>
+        </div>
+        <div>
+            <div class="d-flex mt-5 justify-center ga-5">
+                <v-card v-if="crntType.type === 'oblast' || crntType.type === 'ramka'"
+                        class="rounded1 shadow pa-2"
+                        width="200">
+                    <div class="h-100 align-content-center">
+                        <div class="d-flex justify-center">
+                            <span style="font-size: 12px">Яркость</span>
+                            <input style="width: 50px; font-size: 12px" class="ml-2" type="number" v-model="crntType.brightness">
+                        </div>
+                    </div>
+                </v-card>
+                <v-card class="rounded1 pa-2 shadow" v-if="crntType.type === 'ramka'" width="200">
+                    <div class="h-100 align-content-center">
+                        <div class="d-flex justify-center">
+                            <span style="font-size: 12px">Толщина контура</span>
+                            <input style="width: 50px; font-size: 12px" class="ml-2" type="number" v-model="crntType.thickness">
+                        </div>
+                    </div>
+                </v-card>
+            </div>
+        </div>
+    </div>
+
+</template>
+
+<style scoped>
+.rounded1 {
+    border-radius: 32px !important;
+}
+
+.shadow {
+    box-shadow: -7px -7px 15px 0px rgba(51, 55, 60, 1), 14px 14px 20px 0px rgba(40, 42, 46, 1);
+
+}
+</style>
