@@ -24,7 +24,7 @@ onMounted(()=>{
 
 <template>
 
-    <v-card :width="w" :height="h">
+    <v-card oncontextmenu="return false" :width="w" :height="h">
         <monkey-monitor :active="isActive" :figure="data.figure" :oblast="data.oblast"/>
     </v-card>
 

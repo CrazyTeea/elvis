@@ -3,7 +3,7 @@
 import ExperimentTemplate from "@/components/templates/ExperimentTemplate.vue";
 import ExperimentLine2 from "@/components/organisms/ExperimentLine2.vue";
 import PositionPicker from "@/components/organisms/PositionPicker.vue";
-import {onMounted, ref, watch} from "vue";
+import {onMounted, ref} from "vue";
 import BlickPicker from "@/components/organisms/BlickPicker.vue";
 import HelpersPicker from "@/components/organisms/HelpersPicker.vue";
 import {useExperiment2Store} from "@/store/experiment2Store.js";
@@ -49,15 +49,20 @@ const doSetup = async () => {
 
 const run = async () => {
     btnOff()
+    let {helpers, positions, line} = experimentStore
+    experimentStore.$reset()
+    experimentStore.helpers = helpers
+    experimentStore.positions = positions
+    experimentStore.line = line
     await doSetup()
     let l = new SuperTimer();
     await l.sleep(1000)
     await experimentStore.runExperiment()
+    experimentStore.setActive(false)
+
 }
 const stopExp = async () => {
-    let l = new SuperTimer();
-    await l.sleep(1000)
-    experimentStore.$reset()
+    experimentStore.setActive(false)
 }
 
 
@@ -74,7 +79,7 @@ const stopExp = async () => {
                 <v-btn @click="bttHandler('btn2')" class="ml-16" icon="mdi-pencil"/>
             </div>
             <div v-if="btn.btn1" class="d-flex mt-5 justify-center ga-10">
-                <position-picker v-model="experimentStore.position"/>
+                <position-picker v-model="experimentStore.positions"/>
                 <blick-picker v-model="experimentStore.stimul"/>
             </div>
             <div v-if="btn.btn2" class="d-flex mt-5 justify-center ga-10">

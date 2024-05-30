@@ -1,7 +1,6 @@
 <script setup>
 
 import {computed, onMounted, ref, watch} from "vue";
-import {he} from "vuetify/locale";
 
 const model = defineModel()
 const crntType = ref({
@@ -47,16 +46,19 @@ onMounted(() => {
   console.log(model.value)
 })
 
-watch(() => helpers.value.length, (newVal, oldVal) => {
+watch(() => helpers.value.length, () => {
   model.value = helpers.value
 }, {deep: true})
 
 const typeText = computed(()=>helpers.value.at(helpers.value.length-1)?.type)
 
 watch(crntType, () => {
-  let obj = model.value.at(model.value.length - 1);
-  obj = {...obj, ...crntType.value}
-  model.value[model.value.length - 1] = obj
+  let index = model.value.findIndex(item=>item.type === crntType.value.type)
+  if (index !== -1) {
+    let obj = model.value.at(index)
+    obj = {...obj, ...crntType.value}
+    model.value[index] = obj
+  }
 }, {deep: true})
 let btnHandler = function (type) {
   types.value[type].click = !types.value[type].click
@@ -137,7 +139,12 @@ let btnHandler = function (type) {
 }
 
 .shadow {
-  box-shadow: -7px -7px 15px 0px rgba(51, 55, 60, 1), 14px 14px 20px 0px rgba(40, 42, 46, 1);
+  box-shadow: -7px -7px 15px 0 rgba(51, 55, 60, 1), 14px 14px 20px 0 rgba(40, 42, 46, 1);
 
+}
+input {
+  background: rgba(175, 175, 175, 1);
+  border-radius: 5px;
+  padding-left: 5px;
 }
 </style>
