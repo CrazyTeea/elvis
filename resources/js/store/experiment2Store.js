@@ -93,6 +93,57 @@ export const useExperiment2Store = defineStore('experiment2', {
             this.data.positions = response.position_strings
             this.data.stimul = response.stimul
         },
+        reset() {
+            let {experiment_id, line, helpers,stimul, positions} = this
+            line.currentProb = 0
+            this.$reset()
+            this.experiment_id = experiment_id
+            this.line = line
+            this.helpers = helpers
+            this.positions = positions
+            this.stimul = stimul
+            console.log(this.line)
+        },
+        async storeExperiment() {
+            let data = await axios.post('/experiment/store', {
+                'experiment': {
+                    monkey_id: this.monkey_id,
+                    number: 2,
+                    name: 'Рефлекс на стимул',
+                },
+                'helpers': this.helpers,
+                'stimul': this.stimul,
+                'positions': this.positions
+            })
+            this.experiment_id = data.data['experiment']['id'];
+            return data.data
+        },
+        async getExperimentData() {
+
+            let columns =
+                '    position_strings\n' +
+                '    monkey_id\n' +
+                '    id\n' +
+                '    helpers {\n' +
+                '      thickness\n' +
+                '      name\n' +
+                '      id\n' +
+                '      experiment_id\n' +
+                '      br\n' +
+                '    }\n' +
+                '    stimul {\n' +
+                '      name\n' +
+                '      length\n' +
+                '      id\n' +
+                '      frequency\n' +
+                '      experiment_id\n' +
+                '    }'
+            let response = await GraphqlAPI.get_api('experiment', {id: this.experiment_id}, columns)
+            console.log(typeof response, response)
+            this.helpers = response.helpers
+            this.positions = response.position_strings
+            this.stimul = response.stimul
+        },
         async runExperiment() {
             await this.getExperimentData()
 

@@ -28,6 +28,7 @@ let helpers = ref([])
 let positions = ref([])
 let stimul = ref({})
 
+
 const btn = ref({
     btn1: false,
     btn2: false
