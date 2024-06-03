@@ -1,5 +1,7 @@
 <script setup>
 
+import {onMounted} from "vue";
+
 const model = defineModel()
 
 const btnHandler = (values) => {
@@ -8,14 +10,18 @@ const btnHandler = (values) => {
     }
 }
 
+onMounted(()=>{
+    console.log(model.value)
+})
+
 </script>
 
 <template>
     <div class="d-flex flex-column">
         <v-card class="shadow rounded1" width="153" height="165" rounded>
             <div class="d-flex pa-4 flex-column">
-                <v-btn class="mt-2" @click="btnHandler({type:'blink'})">Мигание</v-btn>
-                <v-btn class="mt-2" @click="btnHandler({type:'light'})">Вспышка</v-btn>
+                <v-btn class="mt-2" @click="btnHandler({name:'blink'})">Мигание</v-btn>
+                <v-btn class="mt-2" @click="btnHandler({name:'light'})">Вспышка</v-btn>
             </div>
             <p class="text-center ">
                 режим стимулов
@@ -32,7 +38,7 @@ const btnHandler = (values) => {
 
 
         </v-card>
-        <v-card v-if="model.type === 'blink'" class="mt-5 rounded1 shadow" width="153" height="30" rounded>
+        <v-card v-if="model?.name === 'blink'" class="mt-5 rounded1 shadow" width="153" height="30" rounded>
             <div class="h-100 align-content-center">
                 <div class="d-flex justify-center">
                     <span style="font-size: 12px">Частота</span>

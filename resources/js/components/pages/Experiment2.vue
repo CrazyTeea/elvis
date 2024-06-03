@@ -3,7 +3,7 @@
 import ExperimentTemplate from "@/components/templates/ExperimentTemplate.vue";
 import ExperimentLine2 from "@/components/organisms/ExperimentLine2.vue";
 import PositionPicker from "@/components/organisms/PositionPicker.vue";
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import BlickPicker from "@/components/organisms/BlickPicker.vue";
 import HelpersPicker from "@/components/organisms/HelpersPicker.vue";
 import {useExperiment2Store} from "@/store/experiment2Store.js";
@@ -11,9 +11,22 @@ import {SuperTimer} from "@mixins/utils.js";
 import MonkeyVideo from "@/components/organisms/MonkeyVideo.vue";
 import {useMonkeyStore} from "@/store/api/monkey.js";
 import {deleteFile, downloadFile, fileHeaders, generateFile, getFiles} from "@mixins/files.js";
+import {Experiment} from "@/classes/Experiment.js";
 
 const experimentStore = useExperiment2Store()
 const monkeyStore = useMonkeyStore()
+const props = defineProps(['monkey_id'])
+
+const experiment = computed(()=>({
+    active: experimentStore.getActive
+}))
+
+const chanel = new BroadcastChannel('experiment-2')
+
+let experimentModel = ref({monkey_id: props.monkey_id, name: 'Рефлекс на вспышку', number: 2})
+let helpers = ref([])
+let positions = ref([])
+let stimul = ref({})
 
 const btn = ref({
     btn1: false,
@@ -22,7 +35,7 @@ const btn = ref({
 
 const monkey = ref({})
 const files = ref([])
-const props = defineProps(['monkey_id'])
+
 
 const btnOff = () => btn.value.btn1 = btn.value.btn2 = false;
 const bttHandler = (b) => {
@@ -30,9 +43,12 @@ const bttHandler = (b) => {
     btn.value[b] = true
 }
 
+
 onMounted(async () => {
+
     monkey.value = await monkeyStore.getMonkey(props.monkey_id)
     files.value = await getFiles(2, props.monkey_id)
+    experimentStore.monkey_id = props.monkey_id
 })
 
 const doSetup = async () => {
@@ -49,20 +65,25 @@ const doSetup = async () => {
 
 const run = async () => {
     btnOff()
-    let {helpers, positions, line} = experimentStore
-    experimentStore.$reset()
-    experimentStore.helpers = helpers
-    experimentStore.positions = positions
-    experimentStore.line = line
-    await doSetup()
+    experimentStore.reset()
+    experimentStore.monkey_id = props.monkey_id
+    let exp = new Experiment(experimentModel.value, helpers.value, positions.value, stimul.value)
+    await exp.storeExperiment()
+    experimentStore.setExperimentId(exp.id)
     let l = new SuperTimer();
-    await l.sleep(1000)
-    await experimentStore.runExperiment()
-    experimentStore.setActive(false)
 
+    if (!experimentStore.is_window){
+        await doSetup()
+        experimentStore.is_window = true
+    }
+
+    await l.sleep(3000)
+
+    await experimentStore.runExperiment()
+    await chanel.postMessage('stop')
 }
 const stopExp = async () => {
-    experimentStore.setActive(false)
+    experimentStore.reset()
 }
 
 
@@ -70,7 +91,7 @@ const stopExp = async () => {
 
 <template>
     <experiment-template>
-        <div v-if="!experimentStore.active">
+        <div v-if="!experiment.active">
             <experiment-line2>
                 <v-btn @click="run" icon="mdi-play"/>
             </experiment-line2>
@@ -79,11 +100,11 @@ const stopExp = async () => {
                 <v-btn @click="bttHandler('btn2')" class="ml-16" icon="mdi-pencil"/>
             </div>
             <div v-if="btn.btn1" class="d-flex mt-5 justify-center ga-10">
-                <position-picker v-model="experimentStore.positions"/>
-                <blick-picker v-model="experimentStore.stimul"/>
+                <position-picker v-model="positions"/>
+                <blick-picker v-model="stimul"/>
             </div>
             <div v-if="btn.btn2" class="d-flex mt-5 justify-center ga-10">
-                <helpers-picker v-model="experimentStore.helpers"/>
+                <helpers-picker v-model="helpers"/>
             </div>
         </div>
         <div v-else>

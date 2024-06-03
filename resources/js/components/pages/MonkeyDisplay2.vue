@@ -2,20 +2,36 @@
 
 import MonkeyMonitor2 from "@/components/organisms/MonkeyMonitor2.vue";
 import {useExperiment2Store} from "@/store/experiment2Store.js";
-import {computed} from "vue";
+import {computed, onMounted, watch} from "vue";
+
 const experimentStore = useExperiment2Store()
 const isActive = computed(() => experimentStore.getActive)
+const line = computed(() => experimentStore.line)
+const position = computed(() => experimentStore.position)
 
+const chanel = new BroadcastChannel('experiment-2');
 
 let w = window.innerWidth;
 let h = window.innerHeight
+
+onMounted(() => {
+    window.addEventListener('beforeunload', (event) => {
+        event.preventDefault()
+        experimentStore.is_window = false
+    })
+    chanel.addEventListener('message', (e) => {
+        console.log(e)
+        experimentStore.setActive(false)
+    })
+})
+
 
 </script>
 
 <template>
 
     <v-card :width="w" :height="h">
-        <monkey-monitor2 :active="isActive"/>
+        <monkey-monitor2 :line="line" :position="position" :active="isActive"/>
     </v-card>
 
 

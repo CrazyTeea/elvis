@@ -12,7 +12,6 @@ import {createPinia} from "pinia";
 import {PiniaSharedState} from "pinia-shared-state";
 
 
-
 const vuetify = createVuetify({
     components,
     directives,
@@ -37,7 +36,7 @@ const vuetify = createVuetify({
     }
 })
 const pinia = createPinia()
-pinia.use(PiniaSharedState({enable: true, initialize: false}),)
+pinia.use(PiniaSharedState({enable: true, initialize: true}),)
 
 const app = createApp(App)
 app.use(vuetify).use(router).use(pinia)

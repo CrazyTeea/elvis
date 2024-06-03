@@ -160,7 +160,7 @@ const startExperiment = async () => {
 
     let exp = await experimentStore.storeExperiment();
 
-    let figure = new Figure(exp.id, figures.value)
+    let figure = new Figure(exp.experiment.id, figures.value)
     figure.generate(oblast.value.options.position)
     await figure.store()
 

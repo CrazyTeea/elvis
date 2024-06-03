@@ -7,6 +7,29 @@ type Query {
     figures(experiment_id: Int @eq): [Figure] @all
     figure_results(experiment_id: Int @eq): [FigureResult] @all
     files(monkey_id: Int @eq, where: _ @whereHasConditions(relation: "experiment",columns: ["number"])): [File] @all
+    experiment(id: Int! @eq): Experiment @find
+}
+
+type Helpers {
+    id: ID
+    experiment_id: Int
+    name: String
+    br: Int
+    thickness: Int
+}
+
+type Stimul {
+    id: ID
+    experiment_id: Int
+    name: String
+    length: Int
+    frequency: Int
+}
+
+type Position {
+    id: ID
+    experiment_id: Int
+    name: Int
 }
 
 type FigureResult {
@@ -49,6 +72,9 @@ type Experiment {
     created_at:DateTime
     updated_at:DateTime
     monkey: Monkey @belongsTo
+    helpers: [Helpers] @hasMany
+    stimul: Stimul @hasOne
+    position_strings: [String]
 }
 
 type Result {
