@@ -6,12 +6,17 @@ import {storeToRefs} from "pinia";
 const store = useExperiment2Store()
 
 const props = defineProps({
-    active: Boolean
+    active: Boolean,
+    line: Object,
+    position: String
 })
 
 const wh = ref({w: 0, h: 0})
 let box = ref(null);
 
+watch(() => props.active, (n, o) => {
+    console.log({n, o})
+})
 
 const ramki = computed(() => ({
     'top-left': {x: 1, y: 1, w: wh.value.w, h: wh.value.h,},
@@ -22,8 +27,7 @@ const ramki = computed(() => ({
 
 const lineStyle = computed(() => {
     let b = box.value
-    let {line} = storeToRefs(store)
-    if (props.active && b && (line.value.crntHelper?.name === 'oblast' || line.value.crntHelper?.name === 'ramka')) {
+    if (props.active && b && (props.line.crntHelper?.name === 'oblast' || props.line.crntHelper?.name === 'ramka')) {
         const {width, height} = b.getBoundingClientRect();
         return {
             vert: `width: ${width}px; size:5px; left: 0; top: ${height / 2}px;`,
@@ -37,15 +41,14 @@ const setOblastPosition = () => {
 
     let b = box.value
     if (props.active && b) {
-        let {position, line} = storeToRefs(store)
         const {width, height} = b.getBoundingClientRect();
         wh.value = {w: width / 2, h: height / 2}
-        const {x, y, w, h} = ramki.value[position.value]
+        const {x, y, w, h} = ramki.value[props.position]
         let s = `width: ${w}px; height: ${h}px;  left: ${x}px; top: ${y}px;`;
-        if (line.value.crntHelper?.name === 'oblast') {
+        if (props.line.crntHelper?.name === 'oblast') {
             s += "background-color:yellow;"
         }
-        if (line.value.crntHelper?.name === 'ramka') {
+        if (props.line.crntHelper?.name === 'ramka') {
             s += "border-width :15px;"
         }
         return s
@@ -67,6 +70,7 @@ onDeactivated(() => {
             <hr :style="lineStyle.vert" class="position-absolute border-solid yellow">
             <hr :style="lineStyle.hor" class="position-absolute border-solid yellow">
             <div :style="setOblastPosition()" class="position-absolute  border-solid yellow">
+                {{store.getActive}}
             </div>
         </div>
         <div v-else class="d-flex h-100 w-100 justify-center align-center align-content-center center">

@@ -2,23 +2,28 @@ import {defineStore} from "pinia";
 import {getRandom, SuperTimer} from "@mixins/utils.js";
 import axios from "axios";
 import {GraphqlAPI} from "@/store/api/GraphqlAPI.js";
+import {reactive, ref} from "vue";
 
 
 export const useExperiment2Store = defineStore('experiment2', {
     state: () => {
         return {
             active: false,
+            zopa: false,
             comment: '',
-            positions: [],
             position: '',
             monkey_id: null,
             experiment_id: null,
-            stimul: {
-                name: '',
-                frequency: 0,
-                length: 0,
+            data: {
+                stimul: {
+                    name: '',
+                    frequency: 0,
+                    length: 0,
+                },
+                helpers: [],
+                positions: [],
             },
-            helpers: [],
+
             timer: null,
             is_window: false,
             line: {
@@ -43,11 +48,50 @@ export const useExperiment2Store = defineStore('experiment2', {
         }
     },
     getters: {
-        getActive: (state)=>state.active
+        getActive: (state) => {
+            return state.zopa
+        }
     },
     actions: {
         setActive(val) {
-            this.active = val
+            this.zopa = val
+        },
+        setExperimentId(val) {
+            this.experiment_id = val
+        },
+        reset() {
+            let line = this.line
+            let win = this.is_window
+            line.currentProb = 0;
+            this.$reset()
+            this.is_window = win
+            this.line = {...line}
+        },
+
+        async getExperimentData() {
+
+            let columns =
+                '    position_strings\n' +
+                '    monkey_id\n' +
+                '    id\n' +
+                '    helpers {\n' +
+                '      thickness\n' +
+                '      name\n' +
+                '      id\n' +
+                '      experiment_id\n' +
+                '      br\n' +
+                '    }\n' +
+                '    stimul {\n' +
+                '      name\n' +
+                '      length\n' +
+                '      id\n' +
+                '      frequency\n' +
+                '      experiment_id\n' +
+                '    }'
+            let response = await GraphqlAPI.get_api('experiment', {id: this.experiment_id}, columns)
+            this.data.helpers = response.helpers
+            this.data.positions = response.position_strings
+            this.data.stimul = response.stimul
         },
         reset() {
             let {experiment_id, line, helpers,stimul, positions} = this
@@ -102,13 +146,12 @@ export const useExperiment2Store = defineStore('experiment2', {
         },
         async runExperiment() {
             await this.getExperimentData()
-            console.log(this.line)
-            this.setActive(true)
-            console.log(this.active)
-            while (this.line.currentProb < this.line.countProbs) {
-                this.line.crntHelper = this.helpers.at(getRandom(0, this.helpers.length - 1))
-                this.position = this.positions.at(getRandom(0, this.positions.length - 1))
 
+            this.setActive(true)
+            while (this.line.currentProb < this.line.countProbs) {
+                this.line.crntHelper = this.data.helpers.at(getRandom(0, this.data.helpers.length - 1))
+                this.position = this.data.positions.at(getRandom(0, this.data.positions.length - 1))
+                this.line.currentProb++
                 this.comment += "<p>Сигнал</p>"
                 let t = new SuperTimer()
                 await t.timeout(() => {
@@ -138,10 +181,10 @@ export const useExperiment2Store = defineStore('experiment2', {
                 await t.timeout(() => {
                     this.comment += "<p>следующая</p>"
                 }, getRandom(this.line.stopDelay.min, this.line.stopDelay.max))
-                this.line.currentProb++
+
             }
             this.setActive(false)
-            console.log(this.active)
+
         }
     },
     share: {
