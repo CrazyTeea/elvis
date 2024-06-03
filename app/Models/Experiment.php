@@ -5,12 +5,13 @@ namespace App\Models;
 use Database\Factories\ExperimentFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  *
@@ -48,6 +49,10 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Experiment whereX2($value)
  * @method static Builder|Experiment whereY1($value)
  * @method static Builder|Experiment whereY2($value)
+ * @property-read \App\Models\Oblast|null $oblast
+ * @property-read Collection $position_strings
+ * @property-read Collection<int, \App\Models\Position> $positions
+ * @property-read int|null $positions_count
  * @mixin Eloquent
  */
 class Experiment extends Model
@@ -79,5 +84,32 @@ class Experiment extends Model
     public function figureResults(): HasMany
     {
         return $this->hasMany(FigureResult::class);
+    }
+
+    public function oblast(): HasOne
+    {
+        return $this->hasOne(Oblast::class);
+    }
+
+    public function positions(): HasMany
+    {
+        return $this->hasMany(Position::class);
+    }
+
+    public function helpers(): HasMany
+    {
+        return $this->hasMany(Helpers::class);
+    }
+
+    public function stimul(): HasOne
+    {
+        return $this->hasOne(Helpers::class);
+    }
+
+    public function getPositionStringsAttribute(): Collection
+    {
+        return $this->positions->map(function (Position $position) {
+            return $position->name;
+        });
     }
 }

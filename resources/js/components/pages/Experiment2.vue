@@ -3,7 +3,7 @@
 import ExperimentTemplate from "@/components/templates/ExperimentTemplate.vue";
 import ExperimentLine2 from "@/components/organisms/ExperimentLine2.vue";
 import PositionPicker from "@/components/organisms/PositionPicker.vue";
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import BlickPicker from "@/components/organisms/BlickPicker.vue";
 import HelpersPicker from "@/components/organisms/HelpersPicker.vue";
 import {useExperiment2Store} from "@/store/experiment2Store.js";
@@ -14,6 +14,12 @@ import {deleteFile, downloadFile, fileHeaders, generateFile, getFiles} from "@mi
 
 const experimentStore = useExperiment2Store()
 const monkeyStore = useMonkeyStore()
+
+const experiment = computed(()=>({
+    helpers: experimentStore.helpers,
+    line: experimentStore.line,
+    active: experimentStore.getActive
+}))
 
 const btn = ref({
     btn1: false,
@@ -31,8 +37,10 @@ const bttHandler = (b) => {
 }
 
 onMounted(async () => {
+
     monkey.value = await monkeyStore.getMonkey(props.monkey_id)
     files.value = await getFiles(2, props.monkey_id)
+    experimentStore.monkey_id = props.monkey_id
 })
 
 const doSetup = async () => {
@@ -49,16 +57,16 @@ const doSetup = async () => {
 
 const run = async () => {
     btnOff()
-    let {helpers, positions, line} = experimentStore
-    experimentStore.$reset()
-    experimentStore.helpers = helpers
-    experimentStore.positions = positions
-    experimentStore.line = line
+    experimentStore.reset()
+    experimentStore.monkey_id = props.monkey_id
+    await experimentStore.storeExperiment()
+
+
     await doSetup()
     let l = new SuperTimer();
-    await l.sleep(1000)
+    await l.sleep(3000)
+    console.log(experiment.value.line)
     await experimentStore.runExperiment()
-    experimentStore.setActive(false)
 
 }
 const stopExp = async () => {
@@ -70,7 +78,7 @@ const stopExp = async () => {
 
 <template>
     <experiment-template>
-        <div v-if="!experimentStore.active">
+        <div v-if="!experiment.active">
             <experiment-line2>
                 <v-btn @click="run" icon="mdi-play"/>
             </experiment-line2>

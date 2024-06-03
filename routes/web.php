@@ -11,6 +11,7 @@ Route::prefix('experiment')->group(function () {
     Route::post('store', [ExperimentController::class, 'store'])->name('experiment.store');
     Route::post('store-figures', [ExperimentController::class, 'storeFigures'])->name('experiment.store-figures');
     Route::get('{experiment_id}/generate-file', [ExperimentController::class, 'generateFile'])->name('experiment.generate-file');
+    Route::get('kek', [ExperimentController::class, 'test'])->name('experiment.kek');
 });
 
 Route::prefix('files')->group(function () {

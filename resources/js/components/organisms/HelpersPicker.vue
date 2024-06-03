@@ -4,26 +4,26 @@ import {computed, onMounted, ref, watch} from "vue";
 
 const model = defineModel()
 const crntType = ref({
-  type: '',
+  name: '',
   thickness: 0,
   brightness: 0
 })
 const helpers = ref([])
 const types = ref({
   'ramka': {
-    type: 'ramka',
+    name: 'ramka',
     click: false,
     thickness: 0,
     brightness: 0
   },
   'oblast': {
-    type: 'oblast',
+    name: 'oblast',
     click: false,
     thickness: 0,
     brightness: 0
   },
   'none': {
-    type: 'none',
+    name: 'none',
     click: false,
     thickness: 0,
     brightness: 0
@@ -50,25 +50,25 @@ watch(() => helpers.value.length, () => {
   model.value = helpers.value
 }, {deep: true})
 
-const typeText = computed(()=>helpers.value.at(helpers.value.length-1)?.type)
+const typeText = computed(()=>helpers.value.at(helpers.value.length-1)?.name)
 
 watch(crntType, () => {
-  let index = model.value.findIndex(item=>item.type === crntType.value.type)
+  let index = model.value.findIndex(item=>item.name === crntType.value.name)
   if (index !== -1) {
     let obj = model.value.at(index)
     obj = {...obj, ...crntType.value}
     model.value[index] = obj
   }
 }, {deep: true})
-let btnHandler = function (type) {
-  types.value[type].click = !types.value[type].click
+let btnHandler = function (name) {
+  types.value[name].click = !types.value[name].click
   let index = helpers.value.findIndex(item => {
-    return item.type === type
+    return item.name === name
   })
 
 
-  if (types.value[type].click) {
-    crntType.value = {type}
+  if (types.value[name].click) {
+    crntType.value = {name}
     if (index === -1) {
       helpers.value.push({...crntType.value})
     } else {
