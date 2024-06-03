@@ -5,20 +5,25 @@ namespace App\Http\Controllers;
 use App\Models\Experiment;
 use App\Models\Figure;
 use App\Models\FigureResult;
+use App\Services\ExperimentService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class ExperimentController extends Controller
 {
-    public function store(Request $request): Model|Experiment
+    public function store(Request $request): array
     {
-        $data = $request->only(Experiment::getModel()->getFillable());
+        return ExperimentService::storeFromRequest($request);
+    }
 
-        return Experiment::updateOrCreate(['id' => $request->get('id')], $data);
+    public function test()
+    {
+        return Experiment::find(410)->position_strings;
     }
 
     public function storeFigures(Request $request): array

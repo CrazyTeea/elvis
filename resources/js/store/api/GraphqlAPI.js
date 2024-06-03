@@ -1,3 +1,5 @@
+import {el} from "vuetify/locale";
+
 class GraphqlAPI {
     constructor(api_name) {
         this.url = '/graphql'
@@ -16,7 +18,6 @@ class GraphqlAPI {
         }
         return ret;
     }
-
     /**
      *
      * @param query
@@ -27,9 +28,11 @@ class GraphqlAPI {
 
         let name = query ? `${this.apiName}(${this.getQueryString(query)})` : this.apiName
 
+        let columns = Array.isArray(columnsToFetch) ? columnsToFetch.join(',') : columnsToFetch
+
         let q = {
             operationName: 'MyQuery',
-            query: `query MyQuery {${name}{${columnsToFetch.join(',')}}}`
+            query: `query MyQuery {${name}{${columns}}}`
         }
 
         let data = await axios.post(this.url, q);
@@ -41,6 +44,11 @@ class GraphqlAPI {
 
 
         return data.data.data[this.apiName]
+    }
+
+    static async get_api(api_name, query, columns) {
+        let api = new GraphqlAPI(api_name)
+        return await api.fetch(query, columns)
     }
 
 }
