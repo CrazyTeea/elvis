@@ -13,19 +13,20 @@ async function getFiles(number, monkey_id) {
         'id', 'name'
     ])
 }
+
 async function deleteFile(id) {
     await axios.post(`/files/delete/${id}`)
-    await getFiles()
 }
 
 function downloadFile(id) {
     window.open(`/files/download/${id}`)
 }
 
-async function generateFile(monkey_id) {
-    await axios.post(`/files/add/${monkey_id}`)
-    await getFiles()
+async function generateFile(number, monkey_id) {
+    await axios.post(`/files/add/${number}/${monkey_id}`)
+    return await getFiles(number, monkey_id)
 }
+
 const fileHeaders = [
     {title: 'name', key: 'name'},
     {title: ':-)', key: 'actions'},

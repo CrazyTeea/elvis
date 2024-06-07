@@ -14,7 +14,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $monkey_id
@@ -53,6 +53,10 @@ use Illuminate\Support\Collection;
  * @property-read Collection $position_strings
  * @property-read Collection<int, \App\Models\Position> $positions
  * @property-read int|null $positions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Helpers> $helpers
+ * @property-read int|null $helpers_count
+ * @property-read \App\Models\Helpers|null $stimul
+ * @property-read \App\Models\TimeLine|null $timeLine
  * @mixin Eloquent
  */
 class Experiment extends Model
@@ -104,6 +108,11 @@ class Experiment extends Model
     public function stimul(): HasOne
     {
         return $this->hasOne(Helpers::class);
+    }
+
+    public function timeLine(): HasOne
+    {
+        return $this->hasOne(TimeLine::class);
     }
 
     public function getPositionStringsAttribute(): Collection

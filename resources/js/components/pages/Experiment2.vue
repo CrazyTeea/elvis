@@ -17,7 +17,7 @@ const experimentStore = useExperiment2Store()
 const monkeyStore = useMonkeyStore()
 const props = defineProps(['monkey_id'])
 
-const experiment = computed(()=>({
+const experiment = computed(() => ({
     active: experimentStore.getActive
 }))
 
@@ -48,10 +48,22 @@ const bttHandler = (b) => {
 onMounted(async () => {
 
     monkey.value = await monkeyStore.getMonkey(props.monkey_id)
-    files.value = await getFiles(2, props.monkey_id)
+    await get_files()
     experimentStore.monkey_id = props.monkey_id
 })
 
+
+const get_files = async ()=>{
+    files.value = await getFiles(2, props.monkey_id)
+}
+const generate_file = async ()=>{
+    await generateFile(2, props.monkey_id);
+    await get_files()
+}
+const delete_file = async (id)=>{
+    await deleteFile(id)
+    await get_files()
+}
 const doSetup = async () => {
     const screenDetails = await window.getScreenDetails()
 
@@ -68,12 +80,12 @@ const run = async () => {
     btnOff()
     experimentStore.reset()
     experimentStore.monkey_id = props.monkey_id
-    let exp = new Experiment(experimentModel.value, helpers.value, positions.value, stimul.value)
+    let exp = new Experiment(experimentModel.value, helpers.value, positions.value, stimul.value, experimentStore.line)
     await exp.storeExperiment()
     experimentStore.setExperimentId(exp.id)
     let l = new SuperTimer();
 
-    if (!experimentStore.is_window){
+    if (!experimentStore.is_window) {
         await doSetup()
         experimentStore.is_window = true
     }
@@ -162,7 +174,7 @@ const stopExp = async () => {
                                     <template v-slot:activator="{ props: kek }">
                                         <v-btn
                                             v-bind="kek"
-                                            @click="getFiles(2, monkey_id)"
+                                            @click="get_files"
                                             text="Посмотреть файл"
                                             variant="outlined"
                                         ></v-btn>
@@ -172,7 +184,7 @@ const stopExp = async () => {
                                         <v-card title="Файлы">
                                             <v-container>
                                                 <div class="d-flex justify-end">
-                                                    <v-btn color="blue" @click="generateFile">Сгенерировать файл</v-btn>
+                                                    <v-btn color="blue" @click="generate_file">Сгенерировать файл</v-btn>
                                                 </div>
                                                 <v-data-table :headers="fileHeaders" :items="files">
                                                     <template #item.actions={item}>
@@ -184,7 +196,7 @@ const stopExp = async () => {
                                                         </v-icon>
                                                         <v-icon
                                                             size="small"
-                                                            @click="deleteFile(item.id)"
+                                                            @click="delete_file(item.id)"
                                                         >
                                                             mdi-delete
                                                         </v-icon>

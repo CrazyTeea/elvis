@@ -234,7 +234,7 @@ export const useExperimentStore = defineStore('experiment1', {
             }
             figure.setFigureResults(this.data.figure_results)
             figure.store();
-            await axios.post(`/files/add/${this.monkey_id}`)
+            await axios.post(`/files/add/1/${this.monkey_id}`)
             this.setActive(false)
         },
         stopTimer() {

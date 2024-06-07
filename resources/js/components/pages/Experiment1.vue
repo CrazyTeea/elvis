@@ -239,7 +239,17 @@ const btnIconRect4 = computed(() => {
     return rect(5, btns.value.rectangle3.click)
 })
 
-
+const get_files = async ()=>{
+    files.value = await getFiles(1, props.monkey_id)
+}
+const generate_file = async ()=>{
+    await generateFile(1, props.monkey_id);
+    await get_files()
+}
+const delete_file = async (id)=>{
+    await deleteFile(id)
+    await get_files()
+}
 
 </script>
 
@@ -409,7 +419,7 @@ const btnIconRect4 = computed(() => {
                                     <template v-slot:activator="{ props: kek }">
                                         <v-btn
                                             v-bind="kek"
-                                            @click="getFiles(1, monkey_id)"
+                                            @click="get_files"
                                             text="Посмотреть файл"
                                             variant="outlined"
                                         ></v-btn>
@@ -419,7 +429,7 @@ const btnIconRect4 = computed(() => {
                                         <v-card title="Файлы">
                                             <v-container>
                                                 <div class="d-flex justify-end">
-                                                    <v-btn color="blue" @click="generateFile(monkey_id)">Сгенерировать файл</v-btn>
+                                                    <v-btn color="blue" @click="generate_file">Сгенерировать файл</v-btn>
                                                 </div>
                                                 <v-data-table :headers="fileHeaders" :items="files">
                                                     <template #item.actions={item}>
@@ -431,7 +441,7 @@ const btnIconRect4 = computed(() => {
                                                         </v-icon>
                                                         <v-icon
                                                             size="small"
-                                                            @click="deleteFile(item.id)"
+                                                            @click="delete_file(item.id)"
                                                         >
                                                             mdi-delete
                                                         </v-icon>
