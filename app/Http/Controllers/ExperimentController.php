@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -19,6 +20,12 @@ class ExperimentController extends Controller
     public function store(Request $request): array
     {
         return ExperimentService::storeFromRequest($request);
+    }
+
+    public function sendStimul(string $command)
+    {
+        $response = Http::post('http://localhost:8001/command/' . $command);
+        return $response->json();
     }
 
     public function test()
