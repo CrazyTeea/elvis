@@ -15,7 +15,7 @@ Route::prefix('experiment')->group(function () {
 });
 
 Route::prefix('files')->group(function () {
-    Route::post('add/{monkey_id}', [FileController::class, 'generateFile'])->name('files.add');
+    Route::post('add/{number}/{monkey_id}', [FileController::class, 'generateFile'])->name('files.add');
     Route::get('download/{id}', [FileController::class, 'downloadFile'])->name('files.download');
     Route::post('delete/{id}', [FileController::class, 'deleteFile'])->name('files.delete');
 });

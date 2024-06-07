@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $experiment_id
@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Oblast whereX2($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Oblast whereY1($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Oblast whereY2($value)
+ * @method static \Database\Factories\OblastFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  */
 class Oblast extends Model

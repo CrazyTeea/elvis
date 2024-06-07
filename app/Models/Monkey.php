@@ -54,7 +54,7 @@ class Monkey extends Model
     public static function destroy($ids): int
     {
         $monkey = Monkey::query()->findOrFail($ids);
-        $models = Experiment::whereMonkeyId($monkey->id)->each(function (Experiment  $experiment) {
+        $models = Experiment::whereMonkeyId($monkey->id)->each(function (Experiment $experiment) {
             FigureResult::whereExperimentId($experiment->id)->each(function (FigureResult $figureResult) {
                 $figureResult->delete();
             });
@@ -68,7 +68,10 @@ class Monkey extends Model
         return parent::destroy($ids);
     }
 
-    public function lastExperiment(): Experiment {
-        return $this->experiments->last();
+    public function lastExperiment($number = null): Experiment
+    {
+        return $this->experiments()->where(compact('number'))->get()->last();
     }
+
+
 }
