@@ -12,6 +12,7 @@ Route::prefix('experiment')->group(function () {
     Route::post('store-figures', [ExperimentController::class, 'storeFigures'])->name('experiment.store-figures');
     Route::get('{experiment_id}/generate-file', [ExperimentController::class, 'generateFile'])->name('experiment.generate-file');
     Route::get('kek', [ExperimentController::class, 'test'])->name('experiment.kek');
+    Route::post('command/{command}', [ExperimentController::class, 'sendStimul'])->name('experiment.command');
 });
 
 Route::prefix('files')->group(function () {

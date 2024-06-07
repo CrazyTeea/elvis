@@ -179,6 +179,7 @@ export const useExperimentStore = defineStore('experiment1', {
                 this.updateFigure(this.data.figure, {x, y, w, h, color, brightness}, false)
                 this.line.current++
                 this.text += '<p>Ждем сигнал </p>'
+                axios.post('/experiment/command/kek')
                 this.beep();
                 let ap = new SuperTimer();
                 await ap.timeout(() => {
