@@ -23,6 +23,7 @@ export const useExperiment2Store = defineStore('experiment2', {
 
             timer: null,
             is_window: false,
+            results: [],
             line: {
                 countProbs: 3,
                 currentProb: 0,
@@ -93,6 +94,9 @@ export const useExperiment2Store = defineStore('experiment2', {
             this.data.positions = response.position_strings
             this.data.stimuls = response.stimuls
         },
+        async storeResults(){
+            await axios.post('/experiment/store-exp2-results', )
+        },
         async storeExperiment()  {
             let data = await axios.post('/experiment/store', {
                 'experiment': {
@@ -146,6 +150,11 @@ export const useExperiment2Store = defineStore('experiment2', {
                 await t.timeout(() => {
                     this.comment += "<p>следующая</p>"
                 }, getRandom(this.line.stopDelay.min, this.line.stopDelay.max))
+                this.results.push({
+                    experiment_id: this.experiment_id,
+                    stimul_id: this.stimul.id,
+                    position_id: this.position.id,
+                })
 
             }
             await axios.post(`/files/add/2/${this.monkey_id}`)

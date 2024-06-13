@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Exp2Results;
 use App\Models\Experiment;
 use App\Models\Figure;
 use App\Models\FigureResult;
@@ -30,6 +31,20 @@ class ExperimentController extends Controller
             return Response::json(['message' => $response->json('message')], 400);
         }
         return $response->json();
+    }
+
+    public function storeExp2Res(Request $request)
+    {
+        $experiment_id = $request->input('experiment_id');
+        $stimul_id = $request->input('stimul_id');
+        $position_id = $request->input('position_id');
+        $helper_id = $request->input('helper_id');
+        $x = $request->input('x');
+        $y = $request->input('y');
+        $reaction = $request->input('reaction');
+
+        return Exp2Results::create(compact('experiment_id',
+            'stimul_id', 'position_id', 'helper_id', 'x', 'y', 'reaction'));
     }
 
     public function test()
