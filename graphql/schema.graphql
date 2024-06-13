@@ -73,7 +73,7 @@ type Experiment {
     updated_at:DateTime
     monkey: Monkey @belongsTo
     helpers: [Helpers] @hasMany
-    stimul: Stimul @hasOne
+    stimuls: [Stimul] @hasMany
     position_strings: [String]
 }
 

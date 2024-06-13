@@ -13,7 +13,7 @@ export class Experiment {
         let data = await axios.post('/experiment/store', {
             'experiment': this.experiment,
             'helpers': this.helpers,
-            'stimul': this.stimul,
+            'stimuls': this.stimul,
             'positions': this.positions,
             'line':this.line
         })

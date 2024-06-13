@@ -12,14 +12,11 @@ export const useExperiment2Store = defineStore('experiment2', {
             zopa: false,
             comment: '',
             position: '',
+            stimul: null,
             monkey_id: null,
             experiment_id: null,
             data: {
-                stimul: {
-                    name: '',
-                    frequency: 0,
-                    length: 0,
-                },
+                stimuls: [],
                 helpers: [],
                 positions: [],
             },
@@ -67,6 +64,9 @@ export const useExperiment2Store = defineStore('experiment2', {
             this.is_window = win
             this.line = {...line}
         },
+        sendStimul(){
+            axios.post(`/experiment/command/${this.stimul.name}`, this.stimul).catch(e=>console.info(e))
+        },
 
         async getExperimentData() {
 
@@ -81,7 +81,7 @@ export const useExperiment2Store = defineStore('experiment2', {
                 '      experiment_id\n' +
                 '      br\n' +
                 '    }\n' +
-                '    stimul {\n' +
+                '    stimuls {\n' +
                 '      name\n' +
                 '      length\n' +
                 '      id\n' +
@@ -91,9 +91,9 @@ export const useExperiment2Store = defineStore('experiment2', {
             let response = await GraphqlAPI.get_api('experiment', {id: this.experiment_id}, columns)
             this.data.helpers = response.helpers
             this.data.positions = response.position_strings
-            this.data.stimul = response.stimul
+            this.data.stimuls = response.stimuls
         },
-        async storeExperiment() {
+        async storeExperiment()  {
             let data = await axios.post('/experiment/store', {
                 'experiment': {
                     monkey_id: this.monkey_id,
@@ -114,11 +114,13 @@ export const useExperiment2Store = defineStore('experiment2', {
             while (this.line.currentProb < this.line.countProbs) {
                 this.line.crntHelper = this.data.helpers.at(getRandom(0, this.data.helpers.length - 1))
                 this.position = this.data.positions.at(getRandom(0, this.data.positions.length - 1))
+                this.stimul = this.data.stimuls.at(getRandom(0, this.data.stimuls.length - 1))
                 this.line.currentProb++
                 this.comment += "<p>Сигнал</p>"
                 let t = new SuperTimer()
                 await t.timeout(() => {
                     this.comment += "<p>Сигнал ждем</p>"
+                    this.sendStimul()
                 }, this.line.startDelay)
                 this.comment += "<p>стимул</p>"
                 t = new SuperTimer()

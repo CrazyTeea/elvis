@@ -84,12 +84,12 @@ class ExperimentService
 
     private function store2(Request $request): array
     {
-        $helpers = $request->input('helpers');
-        $stimul = $request->input('stimul');
-        $positions = $request->input('positions');
-        $experiment = $request->input('experiment');
+        $helpers = $request->input('helpers', []);
+        $stimuls = $request->input('stimuls', []);
+        $positions = $request->input('positions', []);
+        $experiment = $request->input('experiment', []);
         $experimentId = $this->getId($experiment);
-        $line = $request->get('line');
+        $line = $request->get('line', []);
 
         $experimentModel = Experiment::updateOrCreate(['id' => $experimentId], $experiment);
 
@@ -98,8 +98,10 @@ class ExperimentService
         }
 
         TimeLine::create(['experiment_id' => $experimentModel->id, 'data' => json_encode($line)]);
+        foreach ($stimuls as $stimul) {
+            Stimul::create([...$stimul, 'experiment_id' => $experimentModel->id]);
+        }
 
-        Stimul::create([...$stimul, 'experiment_id' => $experimentModel->id]);
 
         foreach ($positions as $position) {
             Position::create(['name' => $position, 'experiment_id' => $experimentModel->id]);
