@@ -6,14 +6,10 @@ use App\Models\Experiment;
 use App\Models\Figure;
 use App\Models\FigureResult;
 use App\Services\ExperimentService;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Response;
 
 class ExperimentController extends Controller
 {
@@ -22,9 +18,17 @@ class ExperimentController extends Controller
         return ExperimentService::storeFromRequest($request);
     }
 
-    public function sendStimul(string $command)
+    public function sendStimul(Request $request)
     {
-        $response = Http::post('http://localhost:8001/command/' . $command);
+        try {
+            $response = Http::post('http://localhost:8001/command/' . $request->input('command'), $request->post());
+
+        } catch (ConnectionException $exception) {
+            return Response::json(['message' => 'Нет связи с COM PROXY'], 400);
+        }
+        if (!$response->successful()) {
+            return Response::json(['message' => $response->json('message')], 400);
+        }
         return $response->json();
     }
 

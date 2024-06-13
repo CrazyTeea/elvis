@@ -57,6 +57,8 @@ use Illuminate\Support\Collection;
  * @property-read int|null $helpers_count
  * @property-read \App\Models\Helpers|null $stimul
  * @property-read \App\Models\TimeLine|null $timeLine
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Stimul> $stimuls
+ * @property-read int|null $stimuls_count
  * @mixin Eloquent
  */
 class Experiment extends Model
@@ -105,9 +107,9 @@ class Experiment extends Model
         return $this->hasMany(Helpers::class);
     }
 
-    public function stimul(): HasOne
+    public function stimuls(): HasMany
     {
-        return $this->hasOne(Helpers::class);
+        return $this->hasMany(Stimul::class);
     }
 
     public function timeLine(): HasOne

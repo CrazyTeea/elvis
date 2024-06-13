@@ -13,7 +13,8 @@
         "mll-lab/graphql-php-scalars": "^6.2",
         "mll-lab/laravel-graphiql": "^3.2",
         "nuwave/lighthouse": "^6.36",
-        "phpoffice/phpspreadsheet": "^2.0"
+        "phpoffice/phpspreadsheet": "^2.0",
+        "ext-http": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0",

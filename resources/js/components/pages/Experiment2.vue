@@ -12,6 +12,7 @@ import MonkeyVideo from "@/components/organisms/MonkeyVideo.vue";
 import {useMonkeyStore} from "@/store/api/monkey.js";
 import {deleteFile, downloadFile, fileHeaders, generateFile, getFiles} from "@mixins/files.js";
 import {Experiment} from "@/classes/Experiment.js";
+import axios from "axios";
 
 const experimentStore = useExperiment2Store()
 const monkeyStore = useMonkeyStore()
@@ -26,7 +27,7 @@ const chanel = new BroadcastChannel('experiment-2')
 let experimentModel = ref({monkey_id: props.monkey_id, name: 'Рефлекс на вспышку', number: 2})
 let helpers = ref([])
 let positions = ref([])
-let stimul = ref({})
+let stimuls = ref([])
 
 
 const btn = ref({
@@ -52,15 +53,25 @@ onMounted(async () => {
     experimentStore.monkey_id = props.monkey_id
 })
 
+const testVal = ref('kek')
 
-const get_files = async ()=>{
+const sendCommand = () => {
+
+}
+
+watch(testVal, () => {
+    sendCommand()
+})
+
+
+const get_files = async () => {
     files.value = await getFiles(2, props.monkey_id)
 }
-const generate_file = async ()=>{
+const generate_file = async () => {
     await generateFile(2, props.monkey_id);
     await get_files()
 }
-const delete_file = async (id)=>{
+const delete_file = async (id) => {
     await deleteFile(id)
     await get_files()
 }
@@ -80,7 +91,9 @@ const run = async () => {
     btnOff()
     experimentStore.reset()
     experimentStore.monkey_id = props.monkey_id
-    let exp = new Experiment(experimentModel.value, helpers.value, positions.value, stimul.value, experimentStore.line)
+    let exp = new Experiment(experimentModel.value, helpers.value, positions.value,
+        stimuls.value, experimentStore.line)
+    console.log(stimuls)
     await exp.storeExperiment()
     experimentStore.setExperimentId(exp.id)
     let l = new SuperTimer();
@@ -114,7 +127,8 @@ const stopExp = async () => {
             </div>
             <div v-if="btn.btn1" class="d-flex mt-5 justify-center ga-10">
                 <position-picker v-model="positions"/>
-                <blick-picker v-model="stimul"/>
+                <blick-picker v-model="stimuls"/>
+<!--                <v-text-field v-model="testVal"/>-->
             </div>
             <div v-if="btn.btn2" class="d-flex mt-5 justify-center ga-10">
                 <helpers-picker v-model="helpers"/>
@@ -184,7 +198,8 @@ const stopExp = async () => {
                                         <v-card title="Файлы">
                                             <v-container>
                                                 <div class="d-flex justify-end">
-                                                    <v-btn color="blue" @click="generate_file">Сгенерировать файл</v-btn>
+                                                    <v-btn color="blue" @click="generate_file">Сгенерировать файл
+                                                    </v-btn>
                                                 </div>
                                                 <v-data-table :headers="fileHeaders" :items="files">
                                                     <template #item.actions={item}>
