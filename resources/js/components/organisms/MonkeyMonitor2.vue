@@ -57,16 +57,20 @@ onDeactivated(() => {
     store.is_window = false
 })
 
+const btnClick = (evt) => {
+    localStorage.setItem('x_clk', evt.clientX)
+    localStorage.setItem('y_clk', evt.clientY)
+}
 
 </script>
 
 <template>
     <div class="pa-3 h-100 w-100 ">
-        <div ref="box" v-if="active" class="h-100 w-100 position-relative border-dashed">
+        <div @click="btnClick" ref="box" v-if="active" class="h-100 w-100 position-relative border-dashed">
             <hr :style="lineStyle.vert" class="position-absolute border-solid yellow">
             <hr :style="lineStyle.hor" class="position-absolute border-solid yellow">
             <div :style="setOblastPosition()" class="position-absolute  border-solid yellow">
-                {{store.getActive}}
+                {{ store.getActive }}
             </div>
         </div>
         <div v-else class="d-flex h-100 w-100 justify-center align-center align-content-center center">

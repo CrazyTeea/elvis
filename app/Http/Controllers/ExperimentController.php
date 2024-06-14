@@ -22,7 +22,7 @@ class ExperimentController extends Controller
     public function sendStimul(Request $request)
     {
         try {
-            $response = Http::post('http://localhost:8001/command/' . $request->input('command'), $request->post());
+            $response = Http::post('http://localhost:8001/command/' . $request->post('name'), $request->post());
 
         } catch (ConnectionException $exception) {
             return Response::json(['message' => 'Нет связи с COM PROXY'], 400);
@@ -35,16 +35,24 @@ class ExperimentController extends Controller
 
     public function storeExp2Res(Request $request)
     {
-        $experiment_id = $request->input('experiment_id');
-        $stimul_id = $request->input('stimul_id');
-        $position_id = $request->input('position_id');
-        $helper_id = $request->input('helper_id');
-        $x = $request->input('x');
-        $y = $request->input('y');
-        $reaction = $request->input('reaction');
+        $results = $request->input('results', []);
+        $ret = [];
+        foreach ($results as $result) {
+            $experiment_id = data_get($result, 'experiment_id');
+            $stimul_id = data_get($result, 'stimul_id');
+            $position_id = data_get($result, 'position_id');
+            $helper_id = data_get($result, 'helper_id');
+            $x = data_get($result, 'x');
+            $y = data_get($result, 'y');
+            $reaction = data_get($result, 'reaction');
 
-        return Exp2Results::create(compact('experiment_id',
-            'stimul_id', 'position_id', 'helper_id', 'x', 'y', 'reaction'));
+            $ret[] = Exp2Results::create(compact('experiment_id',
+                'stimul_id', 'position_id', 'helper_id', 'x', 'y', 'reaction'));
+
+        }
+
+
+        return $ret;
     }
 
     public function test()
