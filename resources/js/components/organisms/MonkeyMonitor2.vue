@@ -14,10 +14,6 @@ const props = defineProps({
 const wh = ref({w: 0, h: 0})
 let box = ref(null);
 
-watch(() => props.active, (n, o) => {
-    console.log({n, o})
-})
-
 const ramki = computed(() => ({
     'top-left': {x: 1, y: 1, w: wh.value.w, h: wh.value.h,},
     'top-right': {x: wh.value.w, y: 0, w: wh.value.w, h: wh.value.h},
