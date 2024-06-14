@@ -216,7 +216,9 @@ export const useExperimentStore = defineStore('experiment1', {
                         await this.sleep()
                         this.showFigure = false
                         let t = (new Date()).getTime() - time
-                        axios.post('/experiment/send-com', {name: 'feed', }).catch(e => console.info(e))
+                        if (localStorage.getItem('react') === 'true') {
+                            axios.post('/experiment/send-com', {name: 'feed', }).catch(e => console.info(e))
+                        }
                         this.updateFigure(this.data.figure, {
                             reaction_time: localStorage.getItem('react') === 'true' ? t : -1,
                             ...params
