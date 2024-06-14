@@ -179,7 +179,7 @@ export const useExperimentStore = defineStore('experiment1', {
                 this.updateFigure(this.data.figure, {x, y, w, h, color, brightness}, false)
                 this.line.current++
                 this.text += '<p>Ждем сигнал </p>'
-                axios.post('/experiment/command/kek')
+
                 this.beep();
                 let ap = new SuperTimer();
                 await ap.timeout(() => {
@@ -216,6 +216,7 @@ export const useExperimentStore = defineStore('experiment1', {
                         await this.sleep()
                         this.showFigure = false
                         let t = (new Date()).getTime() - time
+                        axios.post('/experiment/send-com', {name: 'feed', }).catch(e => console.info(e))
                         this.updateFigure(this.data.figure, {
                             reaction_time: localStorage.getItem('react') === 'true' ? t : -1,
                             ...params

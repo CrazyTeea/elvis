@@ -12,7 +12,7 @@ Route::prefix('experiment')->group(function () {
     Route::post('store-figures', [ExperimentController::class, 'storeFigures'])->name('experiment.store-figures');
     Route::get('{experiment_id}/generate-file', [ExperimentController::class, 'generateFile'])->name('experiment.generate-file');
     Route::get('kek', [ExperimentController::class, 'test'])->name('experiment.kek');
-    Route::post('command/{command}', [ExperimentController::class, 'sendStimul'])->name('experiment.command');
+    Route::post('send-com', [ExperimentController::class, 'sendStimul'])->name('experiment.send-com');
     Route::post('store-exp2-results', [ExperimentController::class, 'storeExp2Res'])->name('experiment.store-exp2-results');
 });
 

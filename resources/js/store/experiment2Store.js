@@ -65,8 +65,9 @@ export const useExperiment2Store = defineStore('experiment2', {
             this.is_window = win
             this.line = {...line}
         },
+
         sendStimul() {
-            axios.post(`/experiment/command/${this.stimul.name}`, this.stimul).catch(e => console.info(e))
+            axios.post(`/experiment/send-com`, this.stimul).catch(e => console.info(e))
         },
 
         async getExperimentData() {
@@ -100,7 +101,7 @@ export const useExperiment2Store = defineStore('experiment2', {
             this.data.stimuls = response.stimuls
         },
         async storeResults() {
-            await axios.post('/experiment/store-exp2-results',)
+            await axios.post('/experiment/store-exp2-results', {results: this.results})
         },
         async storeExperiment() {
             let data = await axios.post('/experiment/store', {
@@ -158,11 +159,16 @@ export const useExperiment2Store = defineStore('experiment2', {
                 this.results.push({
                     experiment_id: this.experiment_id,
                     stimul_id: this.stimul.id,
-                    position_id: this.position.id,
+                    position_id: (this.positions.find(item=>item.name === this.position)).id,
+                    helper_id: this.line.crntHelper.id,
+                    x: localStorage.getItem('x_clk'),
+                    y: localStorage.getItem('y_clk'),
+                    reaction: 0
                 })
 
             }
             await axios.post(`/files/add/2/${this.monkey_id}`)
+            await this.storeResults()
             this.setActive(false)
 
         }
