@@ -29,7 +29,7 @@ type Stimul {
 type Position {
     id: ID
     experiment_id: Int
-    name: Int
+    name: String
 }
 
 type FigureResult {
@@ -74,6 +74,7 @@ type Experiment {
     monkey: Monkey @belongsTo
     helpers: [Helpers] @hasMany
     stimuls: [Stimul] @hasMany
+    positions: [Position] @hasMany
     position_strings: [String]
 }
 

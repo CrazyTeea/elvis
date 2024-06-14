@@ -20,7 +20,6 @@ onMounted(() => {
         experimentStore.is_window = false
     })
     chanel.addEventListener('message', (e) => {
-        console.log(e)
         experimentStore.setActive(false)
     })
 })

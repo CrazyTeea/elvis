@@ -20,7 +20,7 @@ export const useExperiment2Store = defineStore('experiment2', {
                 helpers: [],
                 positions: [],
             },
-
+            positions: [],
             timer: null,
             is_window: false,
             results: [],
@@ -65,8 +65,8 @@ export const useExperiment2Store = defineStore('experiment2', {
             this.is_window = win
             this.line = {...line}
         },
-        sendStimul(){
-            axios.post(`/experiment/command/${this.stimul.name}`, this.stimul).catch(e=>console.info(e))
+        sendStimul() {
+            axios.post(`/experiment/command/${this.stimul.name}`, this.stimul).catch(e => console.info(e))
         },
 
         async getExperimentData() {
@@ -75,6 +75,10 @@ export const useExperiment2Store = defineStore('experiment2', {
                 '    position_strings\n' +
                 '    monkey_id\n' +
                 '    id\n' +
+                'positions {\n' +
+                'name\n' +
+                'id\n' +
+                'experiment_id }\n' +
                 '    helpers {\n' +
                 '      thickness\n' +
                 '      name\n' +
@@ -92,12 +96,13 @@ export const useExperiment2Store = defineStore('experiment2', {
             let response = await GraphqlAPI.get_api('experiment', {id: this.experiment_id}, columns)
             this.data.helpers = response.helpers
             this.data.positions = response.position_strings
+            this.positions = response.positions
             this.data.stimuls = response.stimuls
         },
-        async storeResults(){
-            await axios.post('/experiment/store-exp2-results', )
+        async storeResults() {
+            await axios.post('/experiment/store-exp2-results',)
         },
-        async storeExperiment()  {
+        async storeExperiment() {
             let data = await axios.post('/experiment/store', {
                 'experiment': {
                     monkey_id: this.monkey_id,
