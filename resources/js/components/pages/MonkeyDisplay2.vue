@@ -9,7 +9,7 @@ const isActive = computed(() => experimentStore.getActive)
 const line = computed(() => experimentStore.line)
 const position = computed(() => experimentStore.position)
 
-const chanel = new BroadcastChannel('experiment-2');
+const chanel = new BroadcastChannel('experiment-2-kek');
 
 let w = window.innerWidth;
 let h = window.innerHeight
@@ -18,9 +18,6 @@ onMounted(() => {
     window.addEventListener('beforeunload', (event) => {
         event.preventDefault()
         experimentStore.is_window = false
-    })
-    chanel.addEventListener('message', (e) => {
-        experimentStore.setActive(false)
     })
 })
 

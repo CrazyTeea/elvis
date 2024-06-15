@@ -22,7 +22,7 @@ const experiment = computed(() => ({
     active: experimentStore.getActive
 }))
 
-const chanel = new BroadcastChannel('experiment-2')
+const chanel = new BroadcastChannel('experiment-2-kek')
 
 let experimentModel = ref({monkey_id: props.monkey_id, name: 'Рефлекс на вспышку', number: 2})
 let helpers = ref([])
@@ -51,6 +51,9 @@ onMounted(async () => {
     monkey.value = await monkeyStore.getMonkey(props.monkey_id)
     await get_files()
     experimentStore.monkey_id = props.monkey_id
+    chanel.addEventListener('message', function (e) {
+        experimentStore.stopTimer()
+    })
 })
 
 const testVal = ref('kek')

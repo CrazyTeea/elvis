@@ -5,6 +5,8 @@ import {storeToRefs} from "pinia";
 
 const store = useExperiment2Store()
 
+const chanel = new BroadcastChannel('experiment-2-kek')
+
 const props = defineProps({
     active: Boolean,
     line: Object,
@@ -41,11 +43,13 @@ const setOblastPosition = () => {
         wh.value = {w: width / 2, h: height / 2}
         const {x, y, w, h} = ramki.value[props.position]
         let s = `width: ${w}px; height: ${h}px;  left: ${x}px; top: ${y}px;`;
-        if (props.line.crntHelper?.name === 'oblast') {
-            s += "background-color:yellow;"
-        }
-        if (props.line.crntHelper?.name === 'ramka') {
-            s += "border-width :15px;"
+        if (store.line.showHelpers) {
+            if (props.line.crntHelper?.name === 'oblast') {
+                s += "background-color:yellow;"
+            }
+            if (props.line.crntHelper?.name === 'ramka') {
+                s += "border-width :15px;"
+            }
         }
         return s
     }
@@ -57,9 +61,19 @@ onDeactivated(() => {
     store.is_window = false
 })
 
+const stopClk = (evt)=>{
+    localStorage.setItem('x_clk', evt.clientX)
+    localStorage.setItem('y_clk', evt.clientY)
+    localStorage.setItem('react', 'true')
+
+    chanel.postMessage('stop')
+}
+
 const btnClick = (evt) => {
     localStorage.setItem('x_clk', evt.clientX)
     localStorage.setItem('y_clk', evt.clientY)
+    localStorage.setItem('react', 'false')
+    chanel.postMessage('stop')
 }
 
 </script>
@@ -69,7 +83,7 @@ const btnClick = (evt) => {
         <div @click="btnClick" ref="box" v-if="active" class="h-100 w-100 position-relative border-dashed">
             <hr :style="lineStyle.vert" class="position-absolute border-solid yellow">
             <hr :style="lineStyle.hor" class="position-absolute border-solid yellow">
-            <div :style="setOblastPosition()" class="position-absolute  border-solid yellow">
+            <div :style="setOblastPosition()" @click="stopClk" class="position-absolute  border-solid yellow">
                 {{ store.getActive }}
             </div>
         </div>
