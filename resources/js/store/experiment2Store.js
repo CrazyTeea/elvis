@@ -66,8 +66,12 @@ export const useExperiment2Store = defineStore('experiment2', {
             this.line = {...line}
         },
 
+        stopTimer(){
+            this.timer.stop()
+        },
+
         sendStimul() {
-            axios.post(`/experiment/send-com`, this.stimul).catch(e => console.info(e))
+            axios.post(`/experiment/send-com`, {...this.stimul, position:this.position}).catch(()=>{})
         },
 
         async getExperimentData() {
@@ -132,6 +136,7 @@ export const useExperiment2Store = defineStore('experiment2', {
                     this.comment += "<p>Сигнал ждем</p>"
                     this.sendStimul()
                 }, this.line.startDelay)
+                let time = (new Date()).getTime()
                 this.comment += "<p>стимул</p>"
                 t = new SuperTimer()
                 await t.timeout(() => {
@@ -140,14 +145,19 @@ export const useExperiment2Store = defineStore('experiment2', {
                 }, getRandom(this.line.startHelp.min, this.line.startHelp.max))
                 this.comment += "<p>стимул</p>"
                 this.timer = new SuperTimer()
+                let reaction = -1
 
                 await (async () => {
                     try {
                         await this.timer.timeout(() => {
                             this.line.showHelpers = false
-                            this.comment += "<p>Пауза перед подсказкой(нажала)</p>"
+
                         }, getRandom(this.line.waitQuestion.min, this.line.waitQuestion.max))
                     } catch (e) {
+                        let t = (new Date()).getTime() - time
+                        reaction = localStorage.getItem('react') === 'true' ? t : -1
+
+                        this.comment += "<p>Пауза перед подсказкой(нажала)</p>"
                         this.line.showHelpers = false
                     }
                 })()
@@ -163,7 +173,7 @@ export const useExperiment2Store = defineStore('experiment2', {
                     helper_id: this.line.crntHelper.id,
                     x: localStorage.getItem('x_clk'),
                     y: localStorage.getItem('y_clk'),
-                    reaction: 0
+                    reaction
                 })
 
             }
