@@ -84,7 +84,7 @@ const btnClick = (evt) => {
             <hr :style="lineStyle.vert" class="position-absolute border-solid yellow">
             <hr :style="lineStyle.hor" class="position-absolute border-solid yellow">
             <div :style="setOblastPosition()" @click="stopClk" class="position-absolute  border-solid yellow">
-                {{ store.getActive }}
+
             </div>
         </div>
         <div v-else class="d-flex h-100 w-100 justify-center align-center align-content-center center">

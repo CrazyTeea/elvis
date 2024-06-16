@@ -47,10 +47,19 @@ const bttHandler = (b) => {
 
 
 onMounted(async () => {
-
-    monkey.value = await monkeyStore.getMonkey(props.monkey_id)
-    await get_files()
     experimentStore.monkey_id = props.monkey_id
+    monkey.value = await monkeyStore.getMonkey(props.monkey_id)
+
+
+    let granted = false
+
+    try {
+        const {state} = await navigator.permissions.query({name: 'window-management'});
+        granted = state === 'granted';
+    } catch {
+        // Nothing.
+    }
+    await get_files()
     chanel.addEventListener('message', function (e) {
         experimentStore.stopTimer()
     })
@@ -96,7 +105,6 @@ const run = async () => {
     experimentStore.monkey_id = props.monkey_id
     let exp = new Experiment(experimentModel.value, helpers.value, positions.value,
         stimuls.value, experimentStore.line)
-    console.log(stimuls)
     await exp.storeExperiment()
     experimentStore.setExperimentId(exp.id)
     let l = new SuperTimer();
