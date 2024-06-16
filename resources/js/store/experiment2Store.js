@@ -183,6 +183,9 @@ export const useExperiment2Store = defineStore('experiment2', {
                     } catch (e) {
                         let t = (new Date()).getTime() - time
                         reaction = localStorage.getItem('react') === 'true' ? t : -1
+                        if (localStorage.getItem('react') === 'true') {
+                            axios.post('/experiment/send-com', {name: 'feed', }).catch(e => console.info(e))
+                        }
 
                         this.comment += "<p>Пауза перед подсказкой(нажала)</p>"
                         this.line.showHelpers = false

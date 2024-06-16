@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $experiment_id
@@ -37,7 +37,8 @@ class Stimul extends Model
     protected $fillable = [
         'experiment_id',
         'name',
-        'length'
+        'length',
+        'frequency'
     ];
 
     public function experiment(): HasOne
