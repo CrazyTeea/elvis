@@ -26,7 +26,7 @@ onMounted(() => {
 
 <template>
 
-    <v-card :width="w" :height="h">
+    <v-card oncontextmenu="return false" :width="w" :height="h">
         <monkey-monitor2 :line="line" :position="position" :active="isActive"/>
     </v-card>
 

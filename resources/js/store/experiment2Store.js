@@ -4,6 +4,7 @@ import axios from "axios";
 import {GraphqlAPI} from "@/store/api/GraphqlAPI.js";
 import {reactive, ref} from "vue";
 
+const audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
 
 export const useExperiment2Store = defineStore('experiment2', {
     state: () => {
@@ -74,6 +75,30 @@ export const useExperiment2Store = defineStore('experiment2', {
             axios.post(`/experiment/send-com`, {...this.stimul, position:this.position}).catch(()=>{})
         },
 
+        beep(duration, frequency, volume, type, callback) {
+            let oscillator = audioCtx.createOscillator();
+            let gainNode = audioCtx.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            if (volume) {
+                gainNode.gain.value = volume;
+            }
+            if (frequency) {
+                oscillator.frequency.value = frequency;
+            }
+            if (type) {
+                oscillator.type = type;
+            }
+            if (callback) {
+                oscillator.onended = callback;
+            }
+
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + ((duration || 500) / 1000));
+        },
+
         async getExperimentData() {
 
             let columns =
@@ -131,18 +156,20 @@ export const useExperiment2Store = defineStore('experiment2', {
                 this.stimul = this.data.stimuls.at(getRandom(0, this.data.stimuls.length - 1))
                 this.line.currentProb++
                 this.comment += "<p>Сигнал</p>"
+                this.beep();
                 let t = new SuperTimer()
                 await t.timeout(() => {
                     this.comment += "<p>Сигнал ждем</p>"
                     this.sendStimul()
                 }, this.line.startDelay)
+
                 let time = (new Date()).getTime()
                 this.comment += "<p>стимул</p>"
                 t = new SuperTimer()
                 await t.timeout(() => {
                     this.line.showHelpers = true
                     this.comment += "<p>Пауза перед подсказкой</p>"
-                }, getRandom(this.line.startHelp.min, this.line.startHelp.max))
+                }, (+this.stimul.length) + getRandom(this.line.startHelp.min, this.line.startHelp.max))
                 this.comment += "<p>стимул</p>"
                 this.timer = new SuperTimer()
                 let reaction = -1
