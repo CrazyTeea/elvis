@@ -67,12 +67,13 @@ export const useExperiment2Store = defineStore('experiment2', {
             this.line = {...line}
         },
 
-        stopTimer(){
+        stopTimer() {
             this.timer.stop()
         },
 
         sendStimul() {
-            axios.post(`/experiment/send-com`, {...this.stimul, position:this.position}).catch(()=>{})
+            axios.post(`/experiment/send-com`, {...this.stimul, position: this.position}).catch(() => {
+            })
         },
 
         beep(duration, frequency, volume, type, callback) {
@@ -157,41 +158,47 @@ export const useExperiment2Store = defineStore('experiment2', {
                 this.line.currentProb++
                 this.comment += "<p>Сигнал</p>"
                 this.beep();
-                let t = new SuperTimer()
-                await t.timeout(() => {
-                    this.comment += "<p>Сигнал ждем</p>"
-                    this.sendStimul()
-                }, this.line.startDelay)
-
                 let time = (new Date()).getTime()
-                this.comment += "<p>стимул</p>"
-                t = new SuperTimer()
-                await t.timeout(() => {
-                    this.line.showHelpers = true
-                    this.comment += "<p>Пауза перед подсказкой</p>"
-                }, (+this.stimul.length) + getRandom(this.line.startHelp.min, this.line.startHelp.max))
-                this.comment += "<p>стимул</p>"
-                this.timer = new SuperTimer()
                 let reaction = -1
-
+                this.timer = new SuperTimer()
                 await (async () => {
                     try {
                         await this.timer.timeout(() => {
-                            this.line.showHelpers = false
+                            this.comment += "<p>Сигнал ждем</p>"
+                            this.sendStimul()
+                        }, this.line.startDelay)
 
+                        this.comment += "<p>стимул</p>"
+
+                        await this.timer.timeout(() => {
+                            this.line.showHelpers = true
+                            this.comment += "<p>Пауза перед подсказкой</p>"
+                        }, (+this.stimul.length) + getRandom(this.line.startHelp.min, this.line.startHelp.max))
+
+                        this.comment += "<p>подсказка</p>"
+
+                        await this.timer.timeout(() => {
+                            this.line.showHelpers = false
+                            this.comment += "<p>Пауза перед подсказкой</p>"
                         }, getRandom(this.line.waitQuestion.min, this.line.waitQuestion.max))
-                    } catch (e) {
+
+
+                    }
+                    catch (e){
                         let t = (new Date()).getTime() - time
                         reaction = localStorage.getItem('react') === 'true' ? t : -1
+                        console.log(localStorage.getItem('react'))
                         if (localStorage.getItem('react') === 'true') {
-                            axios.post('/experiment/send-com', {name: 'feed', }).catch(e => console.info(e))
+                            axios.post('/experiment/send-com', {name: 'feed',}).catch(e => console.info(e))
                         }
 
-                        this.comment += "<p>Пауза перед подсказкой(нажала)</p>"
+
                         this.line.showHelpers = false
                     }
                 })()
-                t = new SuperTimer()
+
+
+                let t = new SuperTimer()
                 this.comment += "<p>Пауза</p>"
                 await t.timeout(() => {
                     this.comment += "<p>следующая</p>"
@@ -199,7 +206,7 @@ export const useExperiment2Store = defineStore('experiment2', {
                 this.results.push({
                     experiment_id: this.experiment_id,
                     stimul_id: this.stimul.id,
-                    position_id: (this.positions.find(item=>item.name === this.position)).id,
+                    position_id: (this.positions.find(item => item.name === this.position)).id,
                     helper_id: this.line.crntHelper.id,
                     x: localStorage.getItem('x_clk'),
                     y: localStorage.getItem('y_clk'),

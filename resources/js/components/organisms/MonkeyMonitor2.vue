@@ -61,10 +61,14 @@ onDeactivated(() => {
     store.is_window = false
 })
 
-const stopClk = (evt)=>{
+let btnq = false
+
+const stopClk = (evt) => {
     localStorage.setItem('x_clk', evt.clientX)
     localStorage.setItem('y_clk', evt.clientY)
-    localStorage.setItem('react', 'true')
+    btnq = true
+    localStorage.setItem('react', `${btnq}`)
+    console.log(btnq)
 
     chanel.postMessage('stop')
 }
@@ -72,7 +76,11 @@ const stopClk = (evt)=>{
 const btnClick = (evt) => {
     localStorage.setItem('x_clk', evt.clientX)
     localStorage.setItem('y_clk', evt.clientY)
-    localStorage.setItem('react', 'false')
+    if (!btnq) {
+        localStorage.setItem('react', 'false')
+    }
+    btnq = false
+    console.log("true2")
     chanel.postMessage('stop')
 }
 
@@ -80,7 +88,7 @@ const btnClick = (evt) => {
 
 <template>
     <div class="pa-3 h-100 w-100 ">
-        <div @click="btnClick" ref="box" v-if="active" class="h-100 w-100 position-relative border-dashed">
+        <div @click.prevent="btnClick" ref="box" v-if="active" class="h-100 w-100 position-relative border-dashed">
             <hr :style="lineStyle.vert" class="position-absolute border-solid yellow">
             <hr :style="lineStyle.hor" class="position-absolute border-solid yellow">
             <div :style="setOblastPosition()" @click="stopClk" class="position-absolute  border-solid yellow">
