@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $experiment_id
@@ -32,6 +32,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Exp2Results whereReaction($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Exp2Results whereX($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Exp2Results whereY($value)
+ * @property-read \App\Models\Helpers|null $helper
+ * @property-read \App\Models\Position|null $position
+ * @property-read \App\Models\Stimul|null $stimul
  * @mixin \Eloquent
  */
 class Exp2Results extends Model
@@ -45,4 +48,19 @@ class Exp2Results extends Model
         'position_id',
         'x', 'y', 'reaction'
     ];
+
+    public function stimul()
+    {
+        return $this->hasOne(Stimul::class, 'id', 'stimul_id');
+    }
+
+    public function helper()
+    {
+        return $this->hasOne(Helpers::class, 'id', 'helper_id');
+    }
+
+    public function position()
+    {
+        return $this->hasOne(Position::class, 'id', 'position_id');
+    }
 }

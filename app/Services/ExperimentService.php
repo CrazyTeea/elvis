@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Exp2Results;
 use App\Models\Experiment;
 use App\Models\Figure;
 use App\Models\FigureResult;
@@ -232,6 +233,25 @@ class ExperimentService
         $spr = new Spreadsheet();
 
         $line = $lastExperiment->timeLine->parsed_data;
+        $results = Exp2Results::whereExperimentId($lastExperimentId)->get();
+        $resultsArr = [];
+
+        foreach ($results as $result) {
+            $resultsArr[] = [
+                $result->stimul->name,
+                $result->stimul->frequency,
+                $result->stimul->length,
+                $result->position->name,
+                $result->helper->name,
+                $result->helper->br,
+                $result->helper->thickness,
+                $result->helper->thickness,
+                $result->x,
+                $result->y,
+                $result->reaction,
+            ];
+        }
+
 
         $arr = [
             ['elvis_id', 'date',],
@@ -243,7 +263,22 @@ class ExperimentService
                 $line['startHelp']['min'] . '/' . $line['startHelp']['max'],
                 $line['waitQuestion']['min'] . '/' . $line['waitQuestion']['max'],
                 $line['stopDelay']['min'] . '/' . $line['stopDelay']['max'],
-            ]
+            ],
+            [''],
+            [
+                'стимул',
+                'частота',
+                'длительность',
+                'позиция',
+                'подсказка',
+                'яркость',
+                'ширина',
+                'x клика',
+                'y клика',
+                'время реакции'
+            ],
+            ...$resultsArr
+
         ];
 
         $spr->getActiveSheet()
