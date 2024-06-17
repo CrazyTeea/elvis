@@ -26,7 +26,7 @@ const chanel = new BroadcastChannel('experiment-2-kek')
 
 let experimentModel = ref({monkey_id: props.monkey_id, name: 'Рефлекс на вспышку', number: 2})
 let helpers = ref([])
-let positions = ref([])
+let positions = ref(['top-left', 'top-right', 'bottom-left', 'bottom-right'])
 let stimuls = ref([])
 
 
@@ -109,8 +109,9 @@ const run = async () => {
     experimentStore.setExperimentId(exp.id)
     let l = new SuperTimer();
 
-    if (!experimentStore.is_window) {
+    if (!experimentStore.is_window || localStorage.getItem('is_window') === 'false') {
         await doSetup()
+        localStorage.setItem('is_window', 'true')
         experimentStore.is_window = true
     }
 
@@ -139,7 +140,7 @@ const stopExp = async () => {
             <div v-if="btn.btn1" class="d-flex mt-5 justify-center ga-10">
                 <position-picker v-model="positions"/>
                 <blick-picker v-model="stimuls"/>
-<!--                <v-text-field v-model="testVal"/>-->
+                <!--                <v-text-field v-model="testVal"/>-->
             </div>
             <div v-if="btn.btn2" class="d-flex mt-5 justify-center ga-10">
                 <helpers-picker v-model="helpers"/>

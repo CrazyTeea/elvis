@@ -6,7 +6,16 @@ export default {
             click: false
         }
     },
-    props: ['arrow'],
+    props: {
+        arrow: String,
+        pre_click: {
+            type: Boolean,
+            default: false
+        }
+    },
+    mounted() {
+        this.click = this.pre_click
+    },
     computed: {
         getStyle() {
             return this.click ? 'border: 0.5px solid white;' : ''

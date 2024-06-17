@@ -45,10 +45,12 @@ const setOblastPosition = () => {
         let s = `width: ${w}px; height: ${h}px;  left: ${x}px; top: ${y}px;`;
         if (store.line.showHelpers) {
             if (props.line.crntHelper?.name === 'oblast') {
-                s += "background-color:yellow;"
+                let l = props.line.crntHelper.br / 100
+                s += `background-color: rgba(241, 213, 0, ${l}); `
             }
             if (props.line.crntHelper?.name === 'ramka') {
-                s += "border-width :15px;"
+                let l = props.line.crntHelper.br / 100
+                s += `border-width :${props.line.crntHelper.thickness}px; border: rgba(241, 213, 0, ${l}) solid;`
             }
         }
         return s
@@ -89,9 +91,9 @@ const btnClick = (evt) => {
 <template>
     <div class="pa-3 h-100 w-100 ">
         <div @click.prevent="btnClick" ref="box" v-if="active" class="h-100 w-100 position-relative border-dashed">
-            <hr :style="lineStyle.vert" class="position-absolute border-solid yellow">
-            <hr :style="lineStyle.hor" class="position-absolute border-solid yellow">
-            <div :style="setOblastPosition()" @click="stopClk" class="position-absolute  border-solid yellow">
+            <hr :style="lineStyle.vert" class="position-absolute  border-none">
+            <hr :style="lineStyle.hor" class="position-absolute  border-none">
+            <div :style="setOblastPosition()" @click="stopClk" class="position-absolute ">
 
             </div>
         </div>

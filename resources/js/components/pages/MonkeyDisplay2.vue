@@ -17,6 +17,7 @@ let h = window.innerHeight
 onMounted(() => {
     window.addEventListener('beforeunload', (event) => {
         event.preventDefault()
+        localStorage.setItem('is_window', 'false')
         experimentStore.is_window = false
     })
 })

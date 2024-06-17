@@ -63,7 +63,7 @@ export const useExperiment2Store = defineStore('experiment2', {
             let win = this.is_window
             line.currentProb = 0;
             this.$reset()
-            this.is_window = win
+            this.is_window = win === true
             this.line = {...line}
         },
 
@@ -183,8 +183,7 @@ export const useExperiment2Store = defineStore('experiment2', {
                         }, getRandom(this.line.waitQuestion.min, this.line.waitQuestion.max))
 
 
-                    }
-                    catch (e){
+                    } catch (e) {
                         let t = (new Date()).getTime() - time
                         reaction = localStorage.getItem('react') === 'true' ? t : -1
                         console.log(localStorage.getItem('react'))

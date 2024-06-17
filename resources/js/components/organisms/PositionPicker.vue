@@ -14,6 +14,8 @@ const btnHandler = (name) => {
     }
 }
 
+const isClicked = (val) => model.value.findIndex(item => item === val) !== -1;
+
 </script>
 
 <template>
@@ -21,17 +23,17 @@ const btnHandler = (name) => {
         <v-card class="rounded1 shadow overflow-auto" width="135" height="127">
             <div class="align-content-center text-center h-100 pa-4">
                 <div class="d-flex justify-space-around">
-                    <pos-btn style="width: 50px" @click="btnHandler('top-left')" arrow="top-left"/>
+                    <pos-btn :pre_click="isClicked('top-left')" style="width: 50px" @click="btnHandler('top-left')" arrow="top-left"/>
 
-                    <pos-btn style="width: 50px" @click="btnHandler('top-right')" arrow="top-right"/>
+                    <pos-btn :pre_click="isClicked('top-right')" style="width: 50px" @click="btnHandler('top-right')" arrow="top-right"/>
 
                 </div>
                 <div class="d-flex justify-space-around">
 
-                    <pos-btn style="width: 50px;" @click="btnHandler('bottom-left')" arrow="bottom-left"/>
+                    <pos-btn :pre_click="isClicked('bottom-left')" style="width: 50px;" @click="btnHandler('bottom-left')" arrow="bottom-left"/>
 
 
-                    <pos-btn style="width: 50px;" @click="btnHandler('bottom-right')" arrow="bottom-right"/>
+                    <pos-btn :pre_click="isClicked('bottom-right')" style="width: 50px;" @click="btnHandler('bottom-right')" arrow="bottom-right"/>
                 </div>
 
 

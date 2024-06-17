@@ -94,7 +94,7 @@ class ExperimentService
         $experimentModel = Experiment::updateOrCreate(['id' => $experimentId], $experiment);
 
         foreach ($helpers as $helper) {
-            Helpers::create([...$helper, 'experiment_id' => $experimentModel->id]);
+            Helpers::create([...$helper, 'br' => $helper['brightness'], 'experiment_id' => $experimentModel->id]);
         }
 
         TimeLine::create(['experiment_id' => $experimentModel->id, 'data' => json_encode($line)]);
