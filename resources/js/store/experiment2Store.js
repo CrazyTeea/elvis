@@ -216,8 +216,9 @@ export const useExperiment2Store = defineStore('experiment2', {
                 })
 
             }
-            await axios.post(`/files/add/2/${this.monkey_id}`)
+
             await this.storeResults()
+            await axios.post(`/files/add/2/${this.monkey_id}`)
             this.setActive(false)
 
         }

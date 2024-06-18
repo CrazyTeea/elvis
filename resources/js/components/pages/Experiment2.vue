@@ -109,7 +109,7 @@ const run = async () => {
     experimentStore.setExperimentId(exp.id)
     let l = new SuperTimer();
 
-    if (!experimentStore.is_window || localStorage.getItem('is_window') === 'false') {
+    if (localStorage.getItem('is_window') === 'false') {
         await doSetup()
         localStorage.setItem('is_window', 'true')
         experimentStore.is_window = true
