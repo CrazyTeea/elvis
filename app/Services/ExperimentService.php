@@ -146,7 +146,6 @@ class ExperimentService
             $results = FigureResult::whereExperimentId($lastExperimentId)->get();
 
 
-
             $reacs = 0;
             $arr = [];
             $figures = [];
@@ -239,21 +238,32 @@ class ExperimentService
         $results = Exp2Results::whereExperimentId($lastExperimentId)->get();
         $resultsArr = [];
 
+        $reacs = 0;
         foreach ($results as $result) {
+            if ($result->reaction !== -1) {
+                $reacs++;
+            }
             $resultsArr[] = [
                 $result->stimul->name,
-                $result->stimul->frequency,
-                $result->stimul->length,
+                (string)$result->stimul->frequency,
+                (string)$result->stimul->length,
                 $result->position->name,
                 $result->helper->name,
-                $result->helper->br,
-                $result->helper->thickness,
-                $result->x,
-                $result->y,
-                $result->reaction,
-                $result->reaction > 0 ? 1 : 0,
+                (string)$result->helper->br,
+                (string)$result->helper->thickness,
+                (string)$result->x,
+                (string)$result->y,
+                "$result->reaction",
+                (string)($result->reaction > 0 ? 1 : 0),
             ];
         }
+        $reac_time = $results->reduce(function (float $reac_time, Exp2Results $result) {
+                return $reac_time + ($result->reaction != -1 ? $result->reaction : 0);
+            }, 0) / (max($reacs, 1));
+        $arr2 = [];
+
+        $arr2[] = ['', '', '', '', '', '', '', '', '', 'правильные ответы', "$reacs / {$results->count()}"];
+        $arr2[] = ['', '', '', '', '', '', '', '', '', 'время реакции', "$reac_time"];
 
 
         $arr = [
@@ -281,7 +291,8 @@ class ExperimentService
                 'время реакции',
                 'реакция'
             ],
-            ...$resultsArr
+            ...$resultsArr,
+            ...$arr2
 
         ];
 
