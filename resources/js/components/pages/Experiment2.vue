@@ -184,7 +184,7 @@ const stopExp = async () => {
                             <div class="ml-12 mr-12 pl-12 pr-12">
                                 <div class="d-flex mb-8 justify-space-between">
                                     <div>Количество проб</div>
-                                    <div>{{ experimentStore.line.current }}/{{ experimentStore.line.maxCount }}</div>
+                                    <div>{{ experimentStore.line.currentProb }}/{{ experimentStore.line.countProbs }}</div>
                                 </div>
                                 <div class="d-flex mb-8 justify-space-between">
                                     <div>Правильные ответы</div>

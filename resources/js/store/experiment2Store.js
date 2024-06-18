@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {getRandom, SuperTimer} from "@mixins/utils.js";
+import {getRandom, SuperTimer, toNumber} from "@mixins/utils.js";
 import axios from "axios";
 import {GraphqlAPI} from "@/store/api/GraphqlAPI.js";
 import {reactive, ref} from "vue";
@@ -10,7 +10,6 @@ export const useExperiment2Store = defineStore('experiment2', {
     state: () => {
         return {
             active: false,
-            zopa: false,
             comment: '',
             position: '',
             stimul: null,
@@ -48,12 +47,18 @@ export const useExperiment2Store = defineStore('experiment2', {
     },
     getters: {
         getActive: (state) => {
-            return state.zopa
+            return state.active
+        },
+        getTrueValue: (state) => {
+            return state.results.filter(item => !!item.reaction && item.reaction !== -1).length
+        },
+        getReactionTime: (state) => {
+            return toNumber(state.results.reduce((a, item) => a + toNumber(item.reaction), 0) / state.results.length)
         }
     },
     actions: {
         setActive(val) {
-            this.zopa = val
+            this.active = val
         },
         setExperimentId(val) {
             this.experiment_id = val
@@ -186,11 +191,9 @@ export const useExperiment2Store = defineStore('experiment2', {
                     } catch (e) {
                         let t = (new Date()).getTime() - time
                         reaction = localStorage.getItem('react') === 'true' ? t : -1
-                        console.log(localStorage.getItem('react'))
                         if (localStorage.getItem('react') === 'true') {
                             axios.post('/experiment/send-com', {name: 'feed',}).catch(e => console.info(e))
                         }
-
 
                         this.line.showHelpers = false
                     }

@@ -145,9 +145,7 @@ class ExperimentService
 
             $results = FigureResult::whereExperimentId($lastExperimentId)->get();
 
-            $reac_time = $results->reduce(function (float $reac_time, FigureResult $result) {
-                    return $reac_time + ($result->reaction_time != -1 ? $result->reaction_time : 0);
-                }, 0) / (max($results->count(), 1));
+
 
             $reacs = 0;
             $arr = [];
@@ -177,6 +175,11 @@ class ExperimentService
                     $result->reaction_time == -1 ? '0' : '1',
                 ];
             }
+
+            $reac_time = $results->reduce(function (float $reac_time, FigureResult $result) {
+                    return $reac_time + ($result->reaction_time != -1 ? $result->reaction_time : 0);
+                }, 0) / (max($reacs, 1));
+
             $arr[] = ['', '', '', '', '', '', 'правильные ответы', "$reacs / {$results->count()}"];
             $arr[] = ['', '', '', '', '', '', 'время реакции', $reac_time];
 
@@ -245,10 +248,10 @@ class ExperimentService
                 $result->helper->name,
                 $result->helper->br,
                 $result->helper->thickness,
-                $result->helper->thickness,
                 $result->x,
                 $result->y,
                 $result->reaction,
+                $result->reaction > 0 ? 1 : 0,
             ];
         }
 
@@ -275,7 +278,8 @@ class ExperimentService
                 'ширина',
                 'x клика',
                 'y клика',
-                'время реакции'
+                'время реакции',
+                'реакция'
             ],
             ...$resultsArr
 
