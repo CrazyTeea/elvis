@@ -198,7 +198,7 @@ export const useExperiment2Store = defineStore('experiment2', {
 
                         reaction = localStorage.getItem('react') === 'true' ? t : -1
                         if (localStorage.getItem('react') === 'true') {
-                            this.beep(500, 500)
+                            //this.beep(500, 500)
                             axios.post('/experiment/send-com', {name: 'feed',}).catch(e => console.info(e))
                         }
 
