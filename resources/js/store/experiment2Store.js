@@ -3,6 +3,7 @@ import {getRandom, SuperTimer, toNumber} from "@mixins/utils.js";
 import axios from "axios";
 import {GraphqlAPI} from "@/store/api/GraphqlAPI.js";
 import {reactive, ref} from "vue";
+import audioFile from '@assets/clicker.m4a'
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
 
@@ -199,6 +200,8 @@ export const useExperiment2Store = defineStore('experiment2', {
                         reaction = localStorage.getItem('react') === 'true' ? t : -1
                         if (localStorage.getItem('react') === 'true') {
                             //this.beep(500, 500)
+                            const audio = new Audio(audioFile);
+                            await audio.play();
                             axios.post('/experiment/send-com', {name: 'feed',}).catch(e => console.info(e))
                         }
 

@@ -28,7 +28,7 @@ class SuperTimer {
     }
 
     stop() {
-        this.promise.abort()
+        this.promise?.abort()
     }
 }
 
