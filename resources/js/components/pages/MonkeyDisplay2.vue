@@ -15,11 +15,24 @@ let w = window.innerWidth;
 let h = window.innerHeight
 
 onMounted(() => {
-    window.addEventListener('beforeunload', (event) => {
-        event.preventDefault()
-        localStorage.setItem('is_window', 'false')
-        experimentStore.is_window = false
-    })
+    window.onload = function() {
+        document.addEventListener('touchstart', function(event) {
+            if (event.touches.length > 1) {
+                event.preventDefault()
+            }
+        })
+
+        document.addEventListener('gesturestart', function(event) {
+            event.preventDefault()
+        })
+
+        window.addEventListener('beforeunload', (event) => {
+            event.preventDefault()
+            localStorage.setItem('is_window', 'false')
+            experimentStore.is_window = false
+        })
+    }
+
 })
 
 
