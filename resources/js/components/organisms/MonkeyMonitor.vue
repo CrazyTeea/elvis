@@ -55,10 +55,10 @@ const setOblastPosition = computed(() => {
              class="wh position-relative border-dashed">
             <div :style="setOblastPosition" class="position-absolute border-dashed">
                 <div v-if="store.showFigure">
-                    <div @click.stop="sendStop" :style="store.getFigurePosition()" class="position-relative kek1"
+                    <div @mousemove="sendStop" @mouseover="sendStop" @click.stop="sendStop" :style="store.getFigurePosition()" class="position-relative kek1"
                          v-if="store.data.figure?.name === 'polygon'"
                          v-html="store.generateTriangle()"></div>
-                    <div @click.stop="sendStop" v-else :style="store.getFigurePosition()"
+                    <div @mousemove="sendStop" @mouseover="sendStop" @click.stop="sendStop" v-else :style="store.getFigurePosition()"
                          class="position-relative kek2"></div>
                 </div>
 

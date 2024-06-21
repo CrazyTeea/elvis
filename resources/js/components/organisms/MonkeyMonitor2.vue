@@ -93,7 +93,7 @@ const btnClick = (evt) => {
         <div @click.prevent="btnClick" ref="box" v-if="active" class="h-100 w-100 position-relative border-dashed">
             <hr :style="lineStyle.vert" class="position-absolute  border-none">
             <hr :style="lineStyle.hor" class="position-absolute  border-none">
-            <div :style="setOblastPosition()" @click="stopClk" class="position-absolute ">
+            <div :style="setOblastPosition()" @mousemove="stopClk" @mouseover="stopClk" @click="stopClk" class="position-absolute ">
 
             </div>
         </div>

@@ -22,6 +22,8 @@ export const useExperiment2Store = defineStore('experiment2', {
             },
             positions: [],
             timer: null,
+            timer2: null,
+            timer3: null,
             is_window: false,
             results: [],
             line: {
@@ -73,7 +75,9 @@ export const useExperiment2Store = defineStore('experiment2', {
         },
 
         stopTimer() {
-            this.timer.stop()
+            this.timer?.stop()
+            this.timer2?.stop()
+            this.timer3?.stop()
         },
 
         sendStimul() {
@@ -168,20 +172,21 @@ export const useExperiment2Store = defineStore('experiment2', {
                 this.timer = new SuperTimer()
                 await (async () => {
                     try {
+                        this.timer = new SuperTimer()
                         await this.timer.timeout(() => {
                             this.comment += "<p>Сигнал ждем</p>"
                             this.sendStimul()
                         }, this.line.startDelay)
 
                         this.comment += "<p>стимул</p>"
-
-                        await this.timer.timeout(() => {
+                        this.timer2 = new SuperTimer()
+                        await this.timer2.timeout(() => {
                             this.line.showHelpers = true
                             this.comment += "<p>Пауза перед подсказкой</p>"
                         }, (+this.stimul.length) + getRandom(this.line.startHelp.min, this.line.startHelp.max))
 
                         this.comment += "<p>подсказка</p>"
-
+                        this.timer3 = new SuperTimer()
                         await this.timer.timeout(() => {
                             this.line.showHelpers = false
                             this.comment += "<p>Пауза перед подсказкой</p>"
@@ -190,6 +195,7 @@ export const useExperiment2Store = defineStore('experiment2', {
 
                     } catch (e) {
                         let t = (new Date()).getTime() - time
+                        this.beep(500, 500)
                         reaction = localStorage.getItem('react') === 'true' ? t : -1
                         if (localStorage.getItem('react') === 'true') {
                             axios.post('/experiment/send-com', {name: 'feed',}).catch(e => console.info(e))
