@@ -14,22 +14,10 @@ let w = window.innerWidth;
 let h = window.innerHeight
 
 onMounted(() => {
-    window.onload = function () {
-        document.addEventListener('touchstart', function (event) {
-            if (event.touches.length > 1) {
-                event.preventDefault()
-            }
-        })
-
-        document.addEventListener('gesturestart', function (event) {
-            event.preventDefault()
-        })
-
-        window.addEventListener('beforeunload', (event) => {
-            event.preventDefault()
-            experimentStore.is_window = false
-        })
-    }
+    window.addEventListener('beforeunload', (event) => {
+        event.preventDefault()
+        experimentStore.is_window = false
+    })
 })
 
 </script>

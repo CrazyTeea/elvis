@@ -1,7 +1,7 @@
 import './bootstrap';
 import '../scss/app.scss'
 import '@mdi/font/css/materialdesignicons.css'
-import {createApp, ref} from "vue";
+import {createApp, nextTick, ref} from "vue";
 import App from "./App.vue"
 import router from "./router.js"
 import 'vuetify/styles'
@@ -41,3 +41,25 @@ pinia.use(PiniaSharedState({enable: true, initialize: true}),)
 const app = createApp(App)
 app.use(vuetify).use(router).use(pinia)
 app.mount('#app')
+
+window.addEventListener('load', ()=>{
+    console.log('loaded')
+    window.addEventListener('touchstart', function(event) {
+        event.preventDefault()
+        document.getElementsByTagName('html')[0].style.zoom = 1 / window.devicePixelRatio;
+
+    })
+
+    window.addEventListener('gesturestart', function(event) {
+        event.preventDefault()
+        document.getElementsByTagName('html')[0].style.zoom = 1 / window.devicePixelRatio;
+
+    })
+
+    window.addEventListener('resize', function(event) {
+        event.preventDefault()
+        document.getElementsByTagName('html')[0].style.zoom = 1 / window.devicePixelRatio;
+    })
+})
+
+

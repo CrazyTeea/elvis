@@ -54,7 +54,7 @@ const experimentStore = useExperimentStore()
 <style scoped>
 .input {
     background: rgba(175, 175, 175, 1);
-    width: 50px;
+    width: 70px;
     border-radius: 5px;
     padding-left: 5px;
 }
