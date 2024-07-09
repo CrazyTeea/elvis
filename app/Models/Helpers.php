@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $experiment_id
@@ -36,6 +36,7 @@ class Helpers extends Model
         'experiment_id',
         'name',
         'br',
-        'thickness'
+        'thickness',
+        'offset'
     ];
 }

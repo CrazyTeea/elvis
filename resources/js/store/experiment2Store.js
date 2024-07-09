@@ -126,6 +126,7 @@ export const useExperiment2Store = defineStore('experiment2', {
                 '      id\n' +
                 '      experiment_id\n' +
                 '      br\n' +
+                '      offset\n' +
                 '    }\n' +
                 '    stimuls {\n' +
                 '      name\n' +
@@ -180,9 +181,9 @@ export const useExperiment2Store = defineStore('experiment2', {
                         }, this.line.startDelay)
 
                         this.comment += "<p>стимул</p>"
+                        this.line.showHelpers = true
                         this.timer2 = new SuperTimer()
                         await this.timer2.timeout(() => {
-                            this.line.showHelpers = true
                             this.comment += "<p>Пауза перед подсказкой</p>"
                         }, (+this.stimul.length) + getRandom(this.line.startHelp.min, this.line.startHelp.max))
 

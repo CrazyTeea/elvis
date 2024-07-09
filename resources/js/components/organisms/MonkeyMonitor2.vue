@@ -41,7 +41,25 @@ const setOblastPosition = () => {
     if (props.active && b) {
         const {width, height} = b.getBoundingClientRect();
         wh.value = {w: width / 2, h: height / 2}
-        const {x, y, w, h} = ramki.value[props.position]
+        let {x, y, w, h} = ramki.value[props.position]
+        w-=props.line.crntHelper.offset
+        h-=props.line.crntHelper.offset
+        switch (props.position) {
+            case 'bottom-right':{
+                x+=props.line.crntHelper.offset
+                y+=props.line.crntHelper.offset
+                break;
+            }
+            case 'top-right': {
+                x+=props.line.crntHelper.offset
+
+                break;
+            }
+            case 'bottom-left': {
+                y+=props.line.crntHelper.offset
+                break;
+            }
+        }
         let s = `width: ${w}px; height: ${h}px;  left: ${x}px; top: ${y}px;`;
         if (store.line.showHelpers) {
             if (props.line.crntHelper?.name === 'oblast') {
@@ -91,8 +109,8 @@ const btnClick = (evt) => {
 <template>
     <div class="pa-3 h-100 w-100 ">
         <div @click.prevent="btnClick" ref="box" v-if="active" class="h-100 w-100 position-relative border-dashed">
-            <hr :style="lineStyle.vert" class="position-absolute  border-none">
-            <hr :style="lineStyle.hor" class="position-absolute  border-none">
+            <hr :style="lineStyle.vert" class="position-absolute  border">
+            <hr :style="lineStyle.hor" class="position-absolute  border">
             <div :style="setOblastPosition()" @mousemove="stopClk" @mouseover="stopClk" @click="stopClk" class="position-absolute ">
 
             </div>

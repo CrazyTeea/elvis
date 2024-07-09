@@ -6,7 +6,8 @@ const model = defineModel()
 const crntType = ref({
     name: '',
     thickness: 0,
-    brightness: 0
+    brightness: 0,
+    offset:0
 })
 const helpers = ref([])
 const types = ref({
@@ -14,19 +15,22 @@ const types = ref({
         name: 'ramka',
         click: false,
         thickness: 0,
-        brightness: 0
+        brightness: 0,
+        offset:0
     },
     'oblast': {
         name: 'oblast',
         click: false,
         thickness: 0,
-        brightness: 0
+        brightness: 0,
+        offset:0
     },
     'none': {
         name: 'none',
         click: false,
         thickness: 0,
-        brightness: 0
+        brightness: 0,
+        offset:0
     }
 })
 
@@ -67,7 +71,8 @@ let btnHandler = function (name) {
     if (types.value[name].click) {
         crntType.value = {
             name, thickness: 0,
-            brightness: 0
+            brightness: 0,
+            offset:0
         }
         if (index === -1) {
             helpers.value.push({...crntType.value})
@@ -126,6 +131,15 @@ let btnHandler = function (name) {
                             <span style="font-size: 12px">Толщина контура</span>
                             <input style="width: 50px; font-size: 12px" class="ml-2" type="number"
                                    v-model="crntType.thickness">
+                        </div>
+                    </div>
+                </v-card>
+                <v-card class="rounded1 pa-2 shadow" width="200">
+                    <div class="h-100 align-content-center">
+                        <div class="d-flex justify-center">
+                            <span style="font-size: 12px">Отступ</span>
+                            <input style="width: 50px; font-size: 12px" class="ml-2" type="number"
+                                   v-model="crntType.offset">
                         </div>
                     </div>
                 </v-card>

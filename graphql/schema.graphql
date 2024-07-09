@@ -16,6 +16,7 @@ type Helpers {
     name: String
     br: Int
     thickness: Int
+    offset: Int
 }
 
 type Stimul {
