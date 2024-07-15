@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no, minimum-scale=1">
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Laravel</title>
@@ -17,7 +18,7 @@
     </style>
 
 </head>
-<body>
+<body ontouchmove="event.preventDefault()">
 <div id="app"></div>
 </body>
 <script>

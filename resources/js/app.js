@@ -44,11 +44,11 @@ app.mount('#app')
 
 window.addEventListener('load', ()=>{
     console.log('loaded')
-    window.addEventListener('touchstart', function(event) {
+    document.addEventListener('touchstart', function(event) {
         event.preventDefault()
         document.getElementsByTagName('html')[0].style.zoom = 1 / window.devicePixelRatio;
 
-    })
+    },{passive: false})
 
     window.addEventListener('gesturestart', function(event) {
         event.preventDefault()
