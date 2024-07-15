@@ -174,25 +174,36 @@ export const useExperiment2Store = defineStore('experiment2', {
                 this.timer = new SuperTimer()
                 await (async () => {
                     try {
-                        this.timer = new SuperTimer()
-                        await this.timer.timeout(() => {
-                            this.comment += "<p>Сигнал ждем</p>"
-                            this.sendStimul()
-                        }, this.line.startDelay)
 
-                        this.comment += "<p>стимул</p>"
-                        this.line.showHelpers = true
-                        this.timer2 = new SuperTimer()
-                        await this.timer2.timeout(() => {
-                            this.comment += "<p>Пауза перед подсказкой</p>"
-                        }, (+this.stimul.length) + getRandom(this.line.startHelp.min, this.line.startHelp.max))
+                        let signalTask = async ()=> {
+                            this.timer = new SuperTimer()
+                            await this.timer.timeout(() => {
+                                this.comment += "<p>Сигнал ждем</p>"
+                                this.sendStimul()
+                            }, this.line.startDelay)
 
-                        this.comment += "<p>подсказка</p>"
-                        this.timer3 = new SuperTimer()
-                        await this.timer.timeout(() => {
-                            this.line.showHelpers = false
-                            this.comment += "<p>Пауза перед подсказкой</p>"
-                        }, getRandom(this.line.waitQuestion.min, this.line.waitQuestion.max))
+                        }
+
+                        let helperTask = async () => {
+                            this.comment += "<p>стимул</p>"
+
+                            this.timer2 = new SuperTimer()
+                            await this.timer2.timeout(() => {
+                                this.comment += "<p>Пауза перед подсказкой</p>"
+                                this.line.showHelpers = true
+                            }, (+this.stimul.length) + getRandom(this.line.startHelp.min, this.line.startHelp.max))
+
+                            this.comment += "<p>подсказка</p>"
+                            this.timer3 = new SuperTimer()
+                            await this.timer.timeout(() => {
+                                this.line.showHelpers = false
+                                this.comment += "<p>Пауза перед подсказкой</p>"
+                            }, getRandom(this.line.waitQuestion.min, this.line.waitQuestion.max))
+                        }
+
+                        await Promise.all([signalTask(), helperTask()])
+
+
 
 
                     } catch (e) {
