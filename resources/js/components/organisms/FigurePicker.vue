@@ -12,8 +12,11 @@ const options = defineProps({
         brightness: Object,
         color: Array,
         angle: Array,
+        angle_value: Number,
+        show_time: Number
     },
-    anglePicker: Boolean
+    anglePicker: Boolean,
+    experiment3: Boolean
 })
 
 let values = reactive(options.modelValue)
@@ -176,9 +179,19 @@ const round = computed(() => {
                 <v-card class="rounded-pill" width="300">
                     <v-card-text class="d-flex justify-space-around">
                         <div @click="selectPalka(0)" class=" svg-svg " v-html="palka(0)"/>
-                        <div @click="selectPalka(45)" class=" svg-svg " v-html="palka(45)"/>
+                        <div v-if="!experiment3" @click="selectPalka(45)" class=" svg-svg " v-html="palka(45)"/>
                         <div @click="selectPalka(90)" class=" svg-svg " v-html="palka(90)"/>
-                        <div @click="selectPalka(135)" class=" svg-svg" v-html="palka(135)"/>
+                        <div v-if="!experiment3" @click="selectPalka(135)" class=" svg-svg" v-html="palka(135)"/>
+                    </v-card-text>
+                </v-card>
+                <v-card v-if="experiment3" class="rounded-pill" width="300">
+                    <v-card-text class="d-flex justify-space-around">
+                        <input type="number" v-model="values.angle_value">
+                    </v-card-text>
+                </v-card>
+                <v-card v-if="experiment3" class="rounded-pill" width="300">
+                    <v-card-text class="d-flex justify-space-around">
+                        <input type="number" v-model="values.show_time">
                     </v-card-text>
                 </v-card>
             </div>

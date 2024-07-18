@@ -5,10 +5,11 @@ import {useExperimentStore} from "@/store/experiment1Store.js";
 let experimentStore = useExperimentStore()
 
 export class Figure {
-    constructor(id, figures = []) {
+    constructor(exp, figures = []) {
         this.figures = []
         this.figure_results = []
-        this.experiment_id = id;
+        this.experiment_id = exp.id;
+        this.exp_number = exp.number
         this.addFigures(figures)
     }
 
@@ -116,6 +117,10 @@ export class Figure {
             f.color = f.colors.at(getRandom(0, f.colors.length - 1))
             f.angle = f.angles.at(getRandom(0, f.angles.length - 1)) ?? 0
             f.brightness = getRandom(f.brightness_min, f.brightness_max)
+
+            if (this.exp_number === 3) {
+                f.angle+=f.angle_value
+            }
 
             let i = 0;
             while (i < experimentStore.line.maxCount) {

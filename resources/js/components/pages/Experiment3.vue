@@ -1,73 +1,32 @@
 <script setup>
 import ExperimentTemplate from "@/components/templates/ExperimentTemplate.vue";
-import ExperimentLine from "@/components/organisms/ExperimentLine.vue";
+import ExperimentLine3 from "@/components/organisms/ExperimentLine3.vue";
 import {computed, onMounted, ref, watch} from "vue";
 import {SVG} from '@svgdotjs/svg.js'
 import FigurePicker from "@/components/organisms/FigurePicker.vue";
 import VolumePicker from "@/components/organisms/VolumePicker.vue";
 import svgMixin from "@/mixins/svgMixin.js"
 import MonkeyVideo from "@/components/organisms/MonkeyVideo.vue";
-import {useExperimentStore} from "@/store/experiment1Store.js";
+import {useExperiment3Store} from "@/store/experiment3Store.js";
 import {useMonkeyStore} from "@/store/api/monkey.js";
 import {Figure} from "@/classes/Figure.js";
 import {SuperTimer} from "@mixins/utils.js";
 import {deleteFile, downloadFile, fileHeaders, generateFile, getFiles} from "@mixins/files.js";
+import HelpersPicker from "@/components/organisms/HelpersPicker.vue";
+import {Experiment} from "@/classes/Experiment.js";
 
 const {triangle} = svgMixin()
 let figures = ref([])
 const props = defineProps({
     monkey_id: String
 })
-const experimentStore = useExperimentStore();
+const experimentStore = useExperiment3Store();
 const monkeyStore = useMonkeyStore()
 const monkey = ref({id: props.monkey_id})
 const monitor = ref(null)
 
 const btns = ref({
     active: false,
-    'ellipse': {
-        click: false,
-        options: ref({
-            color: [],
-            brightness: {min: 10, max: 50},
-            size: {min: 10, max: 50},
-            xx: [],
-            yy: [],
-        })
-    },
-    'rectangle': {
-        click: false,
-        options: ref({
-            color: [],
-            brightness: {min: 10, max: 50},
-            size: {min: 10, max: 50},
-            angle: [],
-            xx: [],
-            yy: [],
-        },)
-    },
-    'rectangle2': {
-        click: false,
-        options: ref({
-            color: [],
-            brightness: {min: 10, max: 50},
-            size: {min: 10, max: 50},
-            angle: [],
-            xx: [],
-            yy: [],
-        },)
-    },
-    'polygon': {
-        click: false,
-        options: ref({
-            color: [],
-            brightness: {min: 10, max: 50},
-            size: {min: 10, max: 50},
-            angle: [],
-            xx: [],
-            yy: [],
-        },)
-    },
     'rectangle3': {
         click: false,
         options: ref({
@@ -77,6 +36,8 @@ const btns = ref({
             angle: [],
             xx: [],
             yy: [],
+            angle_value: 0,
+            show_time: 1000
         },)
     },
 });
@@ -85,13 +46,14 @@ const fPicker = ref({
     show: false,
     btn: ''
 });
+const hPicker = ref({shaw: false})
 const experiment = computed(() => ({
     active: experimentStore.getActive,
     data: experimentStore.getData,
     result: experimentStore.getResult,
     line: experimentStore.getLine
 }))
-let bc = new BroadcastChannel('timer-event');
+let bc = new BroadcastChannel('timer-event3');
 onMounted(async () => {
     experimentStore.monkey_id = props.monkey_id
     monkey.value = await monkeyStore.getMonkey(props.monkey_id)
@@ -102,7 +64,7 @@ onMounted(async () => {
     } catch {
         // Nothing.
     }
-    files.value = await getFiles(1, props.monkey_id)
+    files.value = await getFiles(3, props.monkey_id)
 
 
     bc.addEventListener('message', function (e) {
@@ -111,14 +73,7 @@ onMounted(async () => {
 
 })
 
-const btnIconEllipse = computed(() => {
-    const draw = SVG();
-    return draw
-        .ellipse(25, 25)
-        .fill(btns.value.ellipse.click ? 'purple' : 'grey')
-        .parent()
-        .svg();
-});
+let helpers = ref([])
 
 const oblast = ref({
     show: false,
@@ -140,7 +95,7 @@ const doSetup = async () => {
     const screenDetails = await window.getScreenDetails()
 
     const newChildWindow = window.open(
-        '/experiment-1-monitor',
+        '/experiment-3-monitor',
         '_blank',
         `popup=1,left=0,top=0`
     )
@@ -158,9 +113,19 @@ const startExperiment = async () => {
     fPicker.value.show = false
     oblast.value.show = false
 
-    let exp = await experimentStore.storeExperiment();
+    experimentStore.data.helpers = helpers.value
 
-    let figure = new Figure({id:exp.experiment.id, number:1}, figures.value)
+    let exp = new Experiment({
+            name: 'Стимуляция',
+            number: 3,
+            monkey_id: experimentStore.monkey_id
+        }, helpers.value, null,
+        null, experimentStore.line)
+    await exp.storeExperiment()
+    experimentStore.id = exp.id
+
+
+    let figure = new Figure({id: exp.id, number: 3}, figures.value)
     figure.generate(oblast.value.options.position)
     await figure.store()
 
@@ -185,7 +150,7 @@ const btnClick = (btnName) => {
     oblast.value.show = false;
     btns.value[btnName].click = !btns.value[btnName].click;
 
-    if (['ellipse', 'rectangle2', 'polygon', 'rectangle', 'rectangle3'].indexOf(btnName) !== -1) {
+    if (['rectangle3'].indexOf(btnName) !== -1) {
         fPicker.value.btn = btnName;
         fPicker.value.show = btns.value[btnName].click;
     } else {
@@ -193,6 +158,7 @@ const btnClick = (btnName) => {
         fPicker.value.btn = '';
     }
 };
+
 function updateFigures() {
 
     for (let btn in btns.value) {
@@ -226,27 +192,19 @@ const rect = (w, btn) => {
         .svg();
 }
 
-const btnIconRect1 = computed(() => {
-    return rect(25, btns.value.rectangle.click)
-})
-const btnIconRect2 = computed(() => {
-    return rect(35, btns.value.rectangle2.click)
-})
-const btnIconPolygon = computed(() => {
-    return triangle(25, btns.value.polygon.click ? 'purple' : 'grey')
-})
+
 const btnIconRect4 = computed(() => {
     return rect(5, btns.value.rectangle3.click)
 })
 
-const get_files = async ()=>{
-    files.value = await getFiles(1, props.monkey_id)
+const get_files = async () => {
+    files.value = await getFiles(3, props.monkey_id)
 }
-const generate_file = async ()=>{
+const generate_file = async () => {
     await generateFile(1, props.monkey_id);
     await get_files()
 }
-const delete_file = async (id)=>{
+const delete_file = async (id) => {
     await deleteFile(id)
     await get_files()
 }
@@ -258,21 +216,34 @@ const delete_file = async (id)=>{
         <template #default>
 
             <div v-if="!experiment.active">
-                <experiment-line>
+                <experiment-line3>
                     <v-btn @click="startExperiment" variant="outlined" size="x-large"
                            icon="mdi-play-circle"></v-btn>
-                </experiment-line>
+                </experiment-line3>
 
 
                 <div class="mt-11">
                     <v-row>
-                        <v-col class="text-center">
+                        <v-col cols="2">
+
+                        </v-col>
+                        <v-col cols="3" class="text-center">
                             <v-btn @click="()=>{
                             btns.active = !btns.active;
                             fPicker.show = btns.active;
+                            oblast.show = false;
+                            hPicker.shaw = false
                         }" class="shadow" :color="btns.active ? 'blue' : 'purple'" icon="mdi-pencil"/>
                         </v-col>
-                        <v-col cols="1">
+                        <v-col cols="2" class="text-center">
+                            <v-btn @click="()=>{
+                            btns.active = false;
+                            oblast.show = false;
+                            fPicker.show = false;
+                            hPicker.shaw = true
+                        }" class="shadow" :color="hPicker.shaw ? 'blue' : 'purple'" icon="mdi-pencil"/>
+                        </v-col>
+                        <v-col cols="3">
 
                         </v-col>
                     </v-row>
@@ -281,19 +252,7 @@ const delete_file = async (id)=>{
                             <div class="d-flex justify-center">
                                 <v-card class="rounded-pill shadow d-flex justify-center align-center">
                                     <div class="pl-2 pr-2 pt-2 pb-2">
-                                        <v-btn @click="btnClick('ellipse')" width="25" rounded
-                                               size="sm">
-                                            <div class="svg" v-html="btnIconEllipse"></div>
-                                        </v-btn>
-                                        <v-btn @click="btnClick('rectangle')" width="25" size="sm" class="ml-2">
-                                            <div class="svg" v-html="btnIconRect1"></div>
-                                        </v-btn>
-                                        <v-btn @click="btnClick('rectangle2')" width="35" size="sm" class="ml-2">
-                                            <div class="svg2" v-html="btnIconRect2"></div>
-                                        </v-btn>
-                                        <v-btn @click="btnClick('polygon')" width="25" size="sm" class="ml-2">
-                                            <div class="svg" v-html="btnIconPolygon"></div>
-                                        </v-btn>
+
                                         <v-btn @click="btnClick('rectangle3')" width="5" size="sm" class="ml-2 mr-2">
                                             <div class="svg3" v-html="btnIconRect4"></div>
                                         </v-btn>
@@ -301,7 +260,8 @@ const delete_file = async (id)=>{
 
                                 </v-card>
 
-                                <v-btn style="border-radius: 25px !important;" width="168" height="57" class="mt-1 ml-2 shadow" @click="openOblast">Фоновая
+                                <v-btn style="border-radius: 25px !important;" width="168" height="57"
+                                       class="mt-1 ml-2 shadow" @click="openOblast">Фоновая
                                     область
                                 </v-btn>
 
@@ -311,33 +271,33 @@ const delete_file = async (id)=>{
                         <v-col cols="1"></v-col>
                     </v-row>
                     <div v-if="fPicker.show">
-                        <figure-picker v-if="fPicker.btn === 'ellipse'" v-model="btns.ellipse.options"/>
-                        <figure-picker v-if="fPicker.btn === 'rectangle'" v-model="btns.rectangle.options"/>
-                        <figure-picker v-if="fPicker.btn === 'rectangle2'" v-model="btns.rectangle2.options"/>
-                        <figure-picker v-if="fPicker.btn === 'polygon'" v-model="btns.polygon.options"/>
-                        <figure-picker v-if="fPicker.btn === 'rectangle3'" v-model="btns.rectangle3.options"
+                        <figure-picker experiment3 v-if="fPicker.btn === 'rectangle3'" v-model="btns.rectangle3.options"
                                        angle-picker/>
                     </div>
                     <div v-if="oblast.show">
                         <v-row>
                             <v-col class="d-flex justify-center">
                                 <volume-picker v-model="oblast.options.brightness"/>
-                                <v-card  class="ml-3" width="150" height="127">
+                                <v-card class="ml-3" width="150" height="127">
                                     <v-card-text>
-                                        <div >
+                                        <div>
                                             <div class="d-flex justify-space-around">
-                                                <input style="width: 50px" id="x2" v-model="oblast.options.position.x1" placeholder="x1"
+                                                <input style="width: 50px" id="x2" v-model="oblast.options.position.x1"
+                                                       placeholder="x1"
                                                        type="number">
                                                 <div class="ml-2 mr-2">-</div>
-                                                <input style="width: 50px" id="y1" v-model="oblast.options.position.y1" placeholder="y1"
+                                                <input style="width: 50px" id="y1" v-model="oblast.options.position.y1"
+                                                       placeholder="y1"
                                                        type="number">
                                             </div>
 
                                             <div class="d-flex mt-2 justify-space-around">
-                                                <input style="width: 50px" id="x2" v-model="oblast.options.position.x2" placeholder="x2"
+                                                <input style="width: 50px" id="x2" v-model="oblast.options.position.x2"
+                                                       placeholder="x2"
                                                        type="number">
                                                 <div class="ml-2 mr-2">-</div>
-                                                <input style="width: 50px" id="y2" v-model="oblast.options.position.y2" placeholder="y2"
+                                                <input style="width: 50px" id="y2" v-model="oblast.options.position.y2"
+                                                       placeholder="y2"
                                                        type="number">
                                             </div>
                                         </div>
@@ -350,6 +310,9 @@ const delete_file = async (id)=>{
                             <v-col cols="1"></v-col>
                         </v-row>
 
+                    </div>
+                    <div v-if="hPicker.shaw" class="d-flex mt-5 justify-center ga-10">
+                        <helpers-picker experiment3 v-model="helpers"/>
                     </div>
 
                 </div>
@@ -382,7 +345,7 @@ const delete_file = async (id)=>{
                 <v-col lg="300" cols="5">
                     <v-card min-width="600" height="317" border="lg">
 
-                        <iframe id="scaled-frame" src="/experiment-1-monitor" width="100%" height="100%"/>
+                        <iframe id="scaled-frame" src="/experiment-3-monitor" width="100%" height="100%"/>
 
 
                         <!--                        <monkey-monitor ref="monitor" :active="experiment.active" :figure="getFigure"
@@ -429,7 +392,8 @@ const delete_file = async (id)=>{
                                         <v-card title="Файлы">
                                             <v-container>
                                                 <div class="d-flex justify-end">
-                                                    <v-btn color="blue" @click="generate_file">Сгенерировать файл</v-btn>
+                                                    <v-btn color="blue" @click="generate_file">Сгенерировать файл
+                                                    </v-btn>
                                                 </div>
                                                 <v-data-table :headers="fileHeaders" :items="files">
                                                     <template #item.actions={item}>
@@ -493,14 +457,17 @@ const delete_file = async (id)=>{
     height: var(--h1);
     width: var(--h1);
 }
+
 .shadow {
     box-shadow: -7px -7px 15px 0px rgba(51, 55, 60, 1), 14px 14px 20px 0px rgba(40, 42, 46, 1);
 
 }
+
 .shadow2 {
     box-shadow: -7px -7px 15px 0px rgba(51, 55, 60, 1), 14px 14px 20px 0px rgba(40, 42, 46, 1);
 
 }
+
 input {
     border: 1px solid white;
     border-radius: 15%;

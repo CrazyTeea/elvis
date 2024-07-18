@@ -63,6 +63,7 @@ class ExperimentService
                     oblast: $request->only(['br_min', 'br_max', 'x1', 'x2', 'y1', 'y2']),
                 );
             }
+            case 3:
             case 2:
             {
                 return $service->$method($request);
@@ -81,6 +82,21 @@ class ExperimentService
         $oblast['experiment_id'] = $experimentModel->id;
         $oblastModel = Oblast::updateOrCreate(['experiment_id' => $experimentModel->id], $oblast);
         return ['experiment' => $experimentModel->toArray(), 'oblast' => $oblastModel->toArray()];
+    }
+
+    private function store3(Request $request): array
+    {
+        $helpers = $request->get('helpers', []);
+        $experiment = $request->get('experiment', []);
+        $experimentId = $this->getId($experiment);
+
+        $experimentModel = Experiment::updateOrCreate(['id' => $experimentId], $experiment);
+
+        foreach ($helpers as $helper) {
+            Helpers::create([...$helper, 'br' => $helper['brightness'], 'experiment_id' => $experimentModel->id]);
+        }
+
+        return ['experiment' => $experimentModel->toArray()];
     }
 
     private function store2(Request $request): array
@@ -118,6 +134,11 @@ class ExperimentService
         $service->setNumber($number);
         $method = 'generateFile' . $number;
         return $service->$method($monkey_id);
+    }
+
+    private function generateFile3($monkeyId): string
+    {
+        return 'lel';
     }
 
     /**

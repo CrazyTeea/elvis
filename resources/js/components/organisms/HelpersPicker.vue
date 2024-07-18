@@ -33,6 +33,9 @@ const types = ref({
         offset:0
     }
 })
+const props = defineProps({
+    experiment3:Boolean
+})
 
 let getStyleButton = function (t) {
     let styles = {
@@ -134,7 +137,7 @@ let btnHandler = function (name) {
                         </div>
                     </div>
                 </v-card>
-                <v-card class="rounded1 pa-2 shadow" width="200">
+                <v-card v-if="!experiment3" class="rounded1 pa-2 shadow" width="200">
                     <div class="h-100 align-content-center">
                         <div class="d-flex justify-center">
                             <span style="font-size: 12px">Отступ</span>

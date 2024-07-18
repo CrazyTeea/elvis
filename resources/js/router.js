@@ -1,6 +1,7 @@
 import {createWebHistory, createRouter} from 'vue-router'
 import monkeyDisplay from '@/components/pages/MonkeyDisplay.vue'
 import monkeyDisplay2 from '@/components/pages/MonkeyDisplay2.vue'
+import monkeyDisplay3 from '@/components/pages/MonkeyDisplay3.vue'
 
 const routes = [
     {path: '/', name: 'home', component: () => import('./components/pages/Home.vue')},
@@ -18,7 +19,14 @@ const routes = [
         props: true,
         component: () => import('@/components/pages/Experiment2.vue')
     },
-    {path: '/experiment-2-monitor', name: 'experiment2-monitor', props: true, component: monkeyDisplay2}
+    {path: '/experiment-2-monitor', name: 'experiment2-monitor', props: true, component: monkeyDisplay2},
+    {
+        path: '/:monkey_id/experiment-3',
+        name: 'experiment3',
+        props: true,
+        component: () => import('@/components/pages/Experiment3.vue')
+    },
+    {path: '/experiment-3-monitor', name: 'experiment3-monitor', props: true, component: monkeyDisplay3}
 
 ]
 

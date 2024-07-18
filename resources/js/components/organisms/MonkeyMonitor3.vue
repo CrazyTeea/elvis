@@ -1,0 +1,128 @@
+<script setup>
+import {computed, onDeactivated, onMounted, ref, watch} from "vue";
+import {useExperiment3Store} from "@/store/experiment3Store.js";
+import {getRandom} from "@mixins/utils.js";
+
+const store = useExperiment3Store()
+let bc = new BroadcastChannel('timer-event3');
+
+let color = ref(0)
+
+const props = defineProps({
+    figure: Object,
+    oblast: Object,
+    active: Boolean
+})
+
+watch(() => props.oblast.brightness, () => {
+    color.value = getRandom(props.oblast.brightness?.min ?? 0, props.oblast.brightness?.max ?? 0)
+    color.value = color.value * 255 / 100
+}, {deep: true})
+
+let click = false
+
+function sendClick(event) {
+    localStorage.setItem('x', event.clientX)
+    localStorage.setItem('y', event.clientY)
+    localStorage.setItem('react', 'false')
+
+    bc.postMessage('stop')
+}
+
+function sendStop(event) {
+    localStorage.setItem('x', event.clientX)
+    localStorage.setItem('y', event.clientY)
+    localStorage.setItem('react', 'true')
+
+    bc.postMessage('stop')
+
+}
+
+const setOblastPosition1 = computed(() => {
+
+    const w = window.innerWidth / 3
+    const h = window.innerHeight - 15
+
+    let obl = `width: ${w}px; height: ${h}px; left: 1px; top: 0px;`;
+
+    if (store.data.figure.angle > 45) {
+        if (store.data.helper.name === 'oblast') {
+            let l = store.data.helper.br / 100
+            obl += `background-color: rgba(241, 213, 0, ${l}); `
+        }
+
+        if (store.data.helper.name === 'ramka') {
+            let l = store.data.helper.br / 100
+            obl += `border-width :${store.data.helper.thickness}px; border: rgba(241, 213, 0, ${l}) solid;`
+        }
+    }
+
+
+
+    return obl;
+})
+const setOblastPosition2 = computed(() => {
+    const w = window.innerWidth / 3
+    const h = window.innerHeight - 15
+    return `width: ${w}px; height: ${h}px; left: ${w}px; top: 0px`;
+})
+const setOblastPosition3 = computed(() => {
+    const w = window.innerWidth / 3
+    const left = w * 2
+    const h = window.innerHeight - 15
+
+    let obl = `width: ${w}px; height: ${h}px; left: ${left}px; top: 0px;`;
+
+    if (store.data.figure.angle < 90) {
+        if (store.data.helper.name === 'oblast') {
+            let l = store.data.helper.br / 100
+            obl += `background-color: rgba(241, 213, 0, ${l}); `
+        }
+
+        if (store.data.helper.name === 'ramka') {
+            let l = store.data.helper.br / 100
+            obl += `border-width :${store.data.helper.thickness}px; border: rgba(241, 213, 0, ${l}) solid;`
+        }
+    }
+
+
+
+    return obl
+})
+
+
+</script>
+
+<template>
+    <div class="pa-1 h-100 w-100 ">
+        <div v-if="active" @click="sendClick" :style="`background-color: rgb(${color} ${color} ${color});`"
+             class="wh position-relative border-dashed">
+            <div :style="setOblastPosition1" class="position-absolute border-dashed">
+                <div>
+                    A
+                </div>
+            </div>
+            <div :style="setOblastPosition2" class="position-absolute border-dashed">
+                B
+
+                    <div :style="store.getFigurePositionCenter()" class="position-relative kek2"></div>
+
+            </div>
+            <div :style="setOblastPosition3" class="position-absolute border-dashed">
+                C
+
+            </div>
+        </div>
+        <div v-else class="d-flex h-100 w-100 justify-center align-center align-content-center center">
+            <p>Экран обезьяны</p>
+        </div>
+    </div>
+
+</template>
+
+<style scoped>
+.wh {
+    height: 99% !important;
+    width: 99% !important;
+}
+</style>
