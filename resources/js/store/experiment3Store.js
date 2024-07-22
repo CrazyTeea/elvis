@@ -184,6 +184,7 @@ export const useExperiment3Store = defineStore('experiment3', {
         async runExperiment(figure) {
             this.data.figures = await figure.fetchFigures()
             await this.getHelpers()
+
             this.data.figure_results = []
 
             this.setActive(true)
@@ -191,10 +192,11 @@ export const useExperiment3Store = defineStore('experiment3', {
             while (this.line.current < this.line.maxCount) {
                 await this.sleep()
                 this.data.figure = this.data.figures.at(getRandom(0, this.data.figures.length - 1))
+                let angle = this.data.figure.angles.at(getRandom(0, 1))
                 let x = this.data.figure.xx.at(getRandom(0, this.data.figure.xx.length - 1))
                 let y = this.data.figure.yy.at(getRandom(0, this.data.figure.yy.length - 1))
-                let w = this.data.figure.ww.at(getRandom(0, this.data.figure.ww.length - 1))
-                let h = this.data.figure.hh.at(getRandom(0, this.data.figure.hh.length - 1))
+                let w = this.data.figure.ww[0]
+                let h = this.data.figure.hh[0]
                 let color = this.data.figure.colors.at(getRandom(0, this.data.figure.colors.length - 1))
                 let brightness = getRandom(this.data.figure.brightness_min, this.data.figure.brightness_max)
                 this.updateFigure(this.data.figure, {x, y, w, h, color, brightness}, false)
@@ -217,6 +219,7 @@ export const useExperiment3Store = defineStore('experiment3', {
                 await (async () => {
                     this.showHelper = true
                     let params = {
+                        angle,
                         x: this.data.figure.x,
                         y: this.data.figure.y,
                         w: this.data.figure.h,
@@ -229,6 +232,7 @@ export const useExperiment3Store = defineStore('experiment3', {
                         await this.sleep()
                         await this.timer.timeout(() => {
                             this.showHelper = false
+                            this.showFigure = false
                             this.updateFigure(this.data.figure, {
                                 reaction_time: -1,
                                 ...params
@@ -237,7 +241,7 @@ export const useExperiment3Store = defineStore('experiment3', {
                         }, getRandom(this.line.helperRange.min, this.line.helperRange.max))
                     } catch (e) {
                         await this.sleep()
-
+                        this.showFigure = false
                         this.showHelper = false
                         let t = (new Date()).getTime() - time
                         if (localStorage.getItem('react') === 'true') {
@@ -249,16 +253,15 @@ export const useExperiment3Store = defineStore('experiment3', {
                         })
                     }
                 })()
-                this.showFigure = false
-                this.showHelper = false
+
+
                 this.updateClickPosition(this.data.figure)
                 await this.sleep()
                 this.text += '<p>пауза </p>'
-                ap = new SuperTimer({h: this.line.stopRange.min, h1: this.line.stopRange.max})
+                ap = new SuperTimer()
 
                 await ap.timeout(() => {
 
-                    this.showFigure = false
                 }, getRandom(this.line.stopRange.min, this.line.stopRange.max))
 
             }
@@ -276,7 +279,7 @@ export const useExperiment3Store = defineStore('experiment3', {
         },
         getFigurePositionCenter() {
             let style = '';
-            if (!this.active) {
+            if (!this.active || !this.showFigure) {
                 return style
             }
 
@@ -284,29 +287,12 @@ export const useExperiment3Store = defineStore('experiment3', {
                 let figure = this.data.figure
                 let {color, w: width, h, angle, brightness} = figure
 
-                const wh = window.innerWidth / 4
+                const wh = 450
                 const hh = window.innerHeight /2
 
+                console.log(angle)
+
                 style = `background-color: ${color};filter: brightness(${brightness}%);width: ${width}px; height: ${h}px; left: ${wh}px; top: ${hh}px; transform:rotate(${angle}deg)`;
-
-            } catch (e) {
-            }
-            return style
-
-        },
-        getFigurePosition() {
-            let style = '';
-            if (!this.active) {
-                return style
-            }
-
-            try {
-                let figure = this.data.figure
-                let {color, w: width, h, angles, brightness, x, y} = figure
-
-
-                let angle = angles.at(getRandom(0, angles.length - 1))
-                style = `background-color: ${color};filter: brightness(${brightness}%);width: ${width}px; height: ${h}px; left: ${x}px; top: ${y}px; transform:rotate(${angle}deg)`;
 
             } catch (e) {
             }

@@ -28,12 +28,12 @@ const monitor = ref(null)
 const btns = ref({
     active: false,
     'rectangle3': {
-        click: false,
+        click: true,
         options: ref({
             color: [],
             brightness: {min: 10, max: 50},
             size: {min: 10, max: 50},
-            angle: [],
+            angle: [0, 90],
             xx: [],
             yy: [],
             angle_value: 0,
@@ -70,6 +70,8 @@ onMounted(async () => {
     bc.addEventListener('message', function (e) {
         experimentStore.stopTimer()
     })
+
+    fPicker.value.btn = 'rectangle3'
 
 })
 

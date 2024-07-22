@@ -31,6 +31,13 @@ const types = ref({
         thickness: 0,
         brightness: 0,
         offset:0
+    },
+    'figure': {
+        name: 'figure',
+        click: false,
+        thickness: 0,
+        brightness: 0,
+        offset:0
     }
 })
 const props = defineProps({
@@ -41,7 +48,8 @@ let getStyleButton = function (t) {
     let styles = {
         'ramka': 'width: 27px; height: 27px;',
         'oblast': 'width: 27px; height: 27px;',
-        'none': 'width: 120px; height: 27px;'
+        'none': 'width: 120px; height: 27px;',
+        'figure': 'width: 90px; height: 27px;'
     }
     if (types.value[t].click) {
         return styles[t] + 'background-color:red;'
@@ -93,7 +101,7 @@ let btnHandler = function (name) {
 <template>
     <div>
         <div class="d-flex justify-center">
-            <v-card width="300" height="114" class="pa-2 shadow rounded1">
+            <v-card width="400" height="114" class="pa-2 shadow rounded1">
                 <div class="d-flex pa-4  justify-space-around">
                     <button @click="btnHandler('oblast')" :style="getStyleButton('oblast')"
                             class="v-btn v-btn--border v-btn--variant-outlined">
@@ -108,6 +116,10 @@ let btnHandler = function (name) {
                     <button @click="btnHandler('none')" :style="getStyleButton('none')"
                             class="v-btn--rounded v-btn--variant-outlined">
                         Без подсказки
+                    </button>
+                    <button @click="btnHandler('figure')" :style="getStyleButton('figure')"
+                            class="v-btn--rounded v-btn--variant-outlined">
+                        Фигура
                     </button>
                 </div>
                 <p class="text-center ">

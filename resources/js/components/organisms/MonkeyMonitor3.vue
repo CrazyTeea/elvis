@@ -7,6 +7,8 @@ const store = useExperiment3Store()
 let bc = new BroadcastChannel('timer-event3');
 
 let color = ref(0)
+let figureLeft = ref(false)
+let figureRight = ref(false)
 
 const props = defineProps({
     figure: Object,
@@ -43,9 +45,18 @@ const setOblastPosition1 = computed(() => {
     const w = window.innerWidth / 3
     const h = window.innerHeight - 15
 
+    figureLeft = false;
+    figureRight = false
+
     let obl = `width: ${w}px; height: ${h}px; left: 1px; top: 0px;`;
 
-    if (store.data.figure.angle > 45) {
+    if (store.data.figure.angle >= 45) {
+        if (store.data.helper.name === 'figure') {
+            figureLeft = true
+            let l = store.data.helper.br / 100
+            obl += `background-color: rgba(241, 213, 0, ${l}); `
+        }
+
         if (store.data.helper.name === 'oblast') {
             let l = store.data.helper.br / 100
             obl += `background-color: rgba(241, 213, 0, ${l}); `
@@ -70,10 +81,19 @@ const setOblastPosition3 = computed(() => {
     const w = window.innerWidth / 3
     const left = w * 2
     const h = window.innerHeight - 15
+    figureLeft = false
+    figureRight = false
 
     let obl = `width: ${w}px; height: ${h}px; left: ${left}px; top: 0px;`;
 
-    if (store.data.figure.angle < 90) {
+    if ((store.data.figure.angle < 90 && store.data.figure.angle >= 0)
+        ||
+        (store.data.figure.angle > 200) ) {
+        if (store.data.helper.name === 'figure') {
+            figureRight = true
+            let l = store.data.helper.br / 100
+            obl += `background-color: rgba(241, 213, 0, ${l}); `
+        }
         if (store.data.helper.name === 'oblast') {
             let l = store.data.helper.br / 100
             obl += `background-color: rgba(241, 213, 0, ${l}); `
@@ -98,9 +118,10 @@ const setOblastPosition3 = computed(() => {
         <div v-if="active" @click="sendClick" :style="`background-color: rgb(${color} ${color} ${color});`"
              class="wh position-relative border-dashed">
             <div :style="setOblastPosition1" class="position-absolute border-dashed">
-                <div>
+
                     A
-                </div>
+                    <div v-if="figureLeft" :style="store.getFigurePositionCenter()" class="position-relative kek2"></div>
+
             </div>
             <div :style="setOblastPosition2" class="position-absolute border-dashed">
                 B
@@ -110,6 +131,7 @@ const setOblastPosition3 = computed(() => {
             </div>
             <div :style="setOblastPosition3" class="position-absolute border-dashed">
                 C
+                <div v-if="figureRight" :style="store.getFigurePositionCenter()" class="position-relative kek2"></div>
 
             </div>
         </div>

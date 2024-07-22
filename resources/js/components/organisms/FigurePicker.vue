@@ -176,12 +176,12 @@ const round = computed(() => {
     <v-row v-if="anglePicker">
         <v-col>
             <div class="d-flex justify-center">
-                <v-card class="rounded-pill" width="300">
+                <v-card v-if="!experiment3" class="rounded-pill" width="300">
                     <v-card-text class="d-flex justify-space-around">
                         <div @click="selectPalka(0)" class=" svg-svg " v-html="palka(0)"/>
-                        <div v-if="!experiment3" @click="selectPalka(45)" class=" svg-svg " v-html="palka(45)"/>
+                        <div @click="selectPalka(45)" class=" svg-svg " v-html="palka(45)"/>
                         <div @click="selectPalka(90)" class=" svg-svg " v-html="palka(90)"/>
-                        <div v-if="!experiment3" @click="selectPalka(135)" class=" svg-svg" v-html="palka(135)"/>
+                        <div @click="selectPalka(135)" class=" svg-svg" v-html="palka(135)"/>
                     </v-card-text>
                 </v-card>
                 <v-card v-if="experiment3" class="rounded-pill" width="300">
