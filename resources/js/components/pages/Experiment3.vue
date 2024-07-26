@@ -120,7 +120,8 @@ const startExperiment = async () => {
     let exp = new Experiment({
             name: 'Стимуляция',
             number: 3,
-            monkey_id: experimentStore.monkey_id
+            monkey_id: experimentStore.monkey_id,
+            oblast: oblast.value
         }, helpers.value, null,
         null, experimentStore.line)
     await exp.storeExperiment()
@@ -203,7 +204,7 @@ const get_files = async () => {
     files.value = await getFiles(3, props.monkey_id)
 }
 const generate_file = async () => {
-    await generateFile(1, props.monkey_id);
+    await generateFile(3, props.monkey_id);
     await get_files()
 }
 const delete_file = async (id) => {

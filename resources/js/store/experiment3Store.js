@@ -36,6 +36,7 @@ export const useExperiment3Store = defineStore('experiment3', {
             showHelper: false,
             text: '',
             timer: null,
+            timer2: null,
             pause1: false,
             p: null,
             pause2: false,
@@ -164,7 +165,7 @@ export const useExperiment3Store = defineStore('experiment3', {
             oscillator.start(audioCtx.currentTime);
             oscillator.stop(audioCtx.currentTime + ((duration || 500) / 1000));
         },
-        async getHelpers(){
+        async getHelpers() {
             let columns =
                 '    monkey_id\n' +
                 '    id\n' +
@@ -215,19 +216,20 @@ export const useExperiment3Store = defineStore('experiment3', {
                 this.timer = new SuperTimer();
 
                 let time = (new Date()).getTime()
+                this.showHelper = true
+                let params = {
+                    angle,
+                    x: this.data.figure.x,
+                    y: this.data.figure.y,
+                    w: this.data.figure.h,
+                    h: this.data.figure.w,
+                    color,
+                    x_oblast: this.data.oblast.position.x1,
+                    y_oblast: this.data.oblast.position.y1
+                }
 
-                await (async () => {
-                    this.showHelper = true
-                    let params = {
-                        angle,
-                        x: this.data.figure.x,
-                        y: this.data.figure.y,
-                        w: this.data.figure.h,
-                        h: this.data.figure.w,
-                        color,
-                        x_oblast: this.data.oblast.position.x1,
-                        y_oblast: this.data.oblast.position.y1
-                    }
+                let helperTask = async () => {
+                    let time = (new Date()).getTime()
                     try {
                         await this.sleep()
                         await this.timer.timeout(() => {
@@ -237,8 +239,38 @@ export const useExperiment3Store = defineStore('experiment3', {
                                 reaction_time: -1,
                                 ...params
                             })
-                            this.text += '<p>Отключили фигуру </p>'
+                            this.text += '<p>Отключили подсказку </p>'
                         }, getRandom(this.line.helperRange.min, this.line.helperRange.max))
+                    } catch (e) {
+                        await this.sleep()
+                        this.showFigure = false
+                        this.showHelper = false
+                        let t = (new Date()).getTime() - time
+                        if (localStorage.getItem('react') === 'true') {
+                            axios.post('/experiment/send-com', {name: 'feed',}).catch(e => console.info(e))
+                        }
+                        this.text += '<p>Отключили подсказку </p>'
+                        this.updateFigure(this.data.figure, {
+                            reaction_time: localStorage.getItem('react') === 'true' ? t : -1,
+                            ...params
+                        })
+                    }
+                }
+                this.timer2 = new SuperTimer();
+
+                let clickTask = async () => {
+                    let time = (new Date()).getTime()
+                    try {
+                        await this.sleep()
+                        await this.timer2.timeout(() => {
+                            this.showHelper = false
+                            this.showFigure = false
+                            this.updateFigure(this.data.figure, {
+                                reaction_time: -1,
+                                ...params
+                            })
+                            this.text += '<p>Отключили фигуру </p>'
+                        }, this.data.figure.show_time)
                     } catch (e) {
                         await this.sleep()
                         this.showFigure = false
@@ -252,13 +284,16 @@ export const useExperiment3Store = defineStore('experiment3', {
                             ...params
                         })
                     }
-                })()
+                }
 
+                await Promise.all([helperTask, clickTask])
 
                 this.updateClickPosition(this.data.figure)
                 await this.sleep()
                 this.text += '<p>пауза </p>'
                 ap = new SuperTimer()
+                this.showHelper = false
+                this.showFigure = false
 
                 await ap.timeout(() => {
 
@@ -285,14 +320,10 @@ export const useExperiment3Store = defineStore('experiment3', {
 
             try {
                 let figure = this.data.figure
-                let {color, w: width, h, angle, brightness} = figure
+                let {color, w: width, h, angle, brightness, x, y} = figure
 
-                const wh = 450
-                const hh = window.innerHeight /2
 
-                console.log(angle)
-
-                style = `background-color: ${color};filter: brightness(${brightness}%);width: ${width}px; height: ${h}px; left: ${wh}px; top: ${hh}px; transform:rotate(${angle}deg)`;
+                style = `background-color: ${color};filter: brightness(${brightness}%);width: ${width}px; height: ${h}px; left: ${x}px; top: ${y}px; transform:rotate(${angle}deg)`;
 
             } catch (e) {
             }

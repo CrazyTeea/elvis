@@ -88,15 +88,26 @@ class ExperimentService
     {
         $helpers = $request->get('helpers', []);
         $experiment = $request->get('experiment', []);
+        $oblast = $experiment['oblast']['options'];
+        $oblast = [
+            'br_min' => $oblast['brightness']['min'],
+            'br_max' => $oblast['brightness']['max'],
+            'x1' => $oblast['position']['x1'],
+            'x2' => $oblast['position']['x2'],
+            'y1' => $oblast['position']['y1'],
+            'y2' => $oblast['position']['y2'],
+        ];
         $experimentId = $this->getId($experiment);
 
         $experimentModel = Experiment::updateOrCreate(['id' => $experimentId], $experiment);
+
+        $oblastModel = Oblast::updateOrCreate(['experiment_id' => $experimentModel->id], $oblast);
 
         foreach ($helpers as $helper) {
             Helpers::create([...$helper, 'br' => $helper['brightness'], 'experiment_id' => $experimentModel->id]);
         }
 
-        return ['experiment' => $experimentModel->toArray()];
+        return ['experiment' => $experimentModel->toArray(), 'oblast' => $oblastModel->toArray()];
     }
 
     private function store2(Request $request): array
@@ -242,6 +253,7 @@ class ExperimentService
             return $name;
         });
     }
+
     private function generateFile3($monkeyId): string
     {
         $getDiametr = function (FigureResult $result) {
@@ -259,7 +271,7 @@ class ExperimentService
             $monkey = Monkey::find($monkeyId);
 
             $spr = new Spreadsheet();
-            $lastExperiment = $monkey->lastExperiment(1);
+            $lastExperiment = $monkey->lastExperiment(3);
             $lastExperimentId = $lastExperiment->id;
 
             $results = FigureResult::whereExperimentId($lastExperimentId)->get();
