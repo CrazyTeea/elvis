@@ -205,7 +205,7 @@ export const useExperiment3Store = defineStore('experiment3', {
                 this.line.current++
                 this.text += '<p>Ждем сигнал </p>'
 
-                //this.beep();
+                this.beep();
 
                 let ap = new SuperTimer();
                 await ap.timeout(() => {
