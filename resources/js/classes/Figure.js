@@ -16,6 +16,7 @@ export class Figure {
     addFigures(figures) {
         for (let f in figures) {
             let fig = figures[f]
+            console.log(fig)
             this.figures.push({
                 name: fig.name,
                 size_min: fig.options.size.min,
@@ -29,6 +30,7 @@ export class Figure {
                 yy: [],
                 ww: [],
                 hh: [],
+                show_time:fig.options.show_time
             })
         }
     }
@@ -78,6 +80,7 @@ export class Figure {
             'size_max',
             'brightness_min',
             'brightness_max',
+            'show_time',
             'angle',
             'angles',
             'colors'])

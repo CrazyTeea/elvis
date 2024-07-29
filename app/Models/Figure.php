@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property float $x
@@ -111,7 +111,8 @@ class Figure extends Model
         'angle',
         'angles',
         'colors',
-        'brightness'
+        'brightness',
+        'show_time'
     ];
 
     public function experiment(): BelongsTo

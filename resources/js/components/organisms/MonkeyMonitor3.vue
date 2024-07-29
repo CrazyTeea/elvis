@@ -24,18 +24,22 @@ watch(() => props.oblast.brightness, () => {
 let click = false
 
 function sendClick(event) {
+
     localStorage.setItem('x', event.clientX)
     localStorage.setItem('y', event.clientY)
     localStorage.setItem('react', 'false')
 
     bc.postMessage('stop')
+    console.log('click')
 }
 
 function sendStop(event) {
+
     localStorage.setItem('x', event.clientX)
     localStorage.setItem('y', event.clientY)
     localStorage.setItem('react', 'true')
 
+    console.log('click')
     bc.postMessage('stop')
 
 }
@@ -50,25 +54,25 @@ const setOblastPosition1 = computed(() => {
 
     let obl = `width: ${w}px; height: ${h}px; left: 1px; top: 0px;`;
 
-    if (store.data.figure.angle >= 45) {
-        if (store.data.helper.name === 'figure') {
-            figureLeft = true
-            let l = store.data.helper.br / 100
-            obl += `background-color: rgba(241, 213, 0, ${l}); `
-        }
+    if (store.showHelper) {
+        if (store.data.figure.angle >= 45) {
+            if (store.data.helper.name === 'figure') {
+                figureLeft = true
+                let l = store.data.helper.br / 100
+                obl += `background-color: rgba(241, 213, 0, ${l}); `
+            }
 
-        if (store.data.helper.name === 'oblast') {
-            let l = store.data.helper.br / 100
-            obl += `background-color: rgba(241, 213, 0, ${l}); `
-        }
+            if (store.data.helper.name === 'oblast') {
+                let l = store.data.helper.br / 100
+                obl += `background-color: rgba(241, 213, 0, ${l}); `
+            }
 
-        if (store.data.helper.name === 'ramka') {
-            let l = store.data.helper.br / 100
-            obl += `border-width :${store.data.helper.thickness}px; border: rgba(241, 213, 0, ${l}) solid;`
+            if (store.data.helper.name === 'ramka') {
+                let l = store.data.helper.br / 100
+                obl += `border-width :${store.data.helper.thickness}px; border: rgba(241, 213, 0, ${l}) solid;`
+            }
         }
     }
-
-
 
     return obl;
 })
@@ -85,27 +89,26 @@ const setOblastPosition3 = computed(() => {
     figureRight = false
 
     let obl = `width: ${w}px; height: ${h}px; left: ${left}px; top: 0px;`;
+    if (store.showHelper){
+        if ((store.data.figure.angle < 90 && store.data.figure.angle >= 0)
+            ||
+            (store.data.figure.angle > 200) ) {
+            if (store.data.helper.name === 'figure') {
+                figureRight = true
+                let l = store.data.helper.br / 100
+                obl += `background-color: rgba(241, 213, 0, ${l}); `
+            }
+            if (store.data.helper.name === 'oblast') {
+                let l = store.data.helper.br / 100
+                obl += `background-color: rgba(241, 213, 0, ${l}); `
+            }
 
-    if ((store.data.figure.angle < 90 && store.data.figure.angle >= 0)
-        ||
-        (store.data.figure.angle > 200) ) {
-        if (store.data.helper.name === 'figure') {
-            figureRight = true
-            let l = store.data.helper.br / 100
-            obl += `background-color: rgba(241, 213, 0, ${l}); `
-        }
-        if (store.data.helper.name === 'oblast') {
-            let l = store.data.helper.br / 100
-            obl += `background-color: rgba(241, 213, 0, ${l}); `
-        }
-
-        if (store.data.helper.name === 'ramka') {
-            let l = store.data.helper.br / 100
-            obl += `border-width :${store.data.helper.thickness}px; border: rgba(241, 213, 0, ${l}) solid;`
+            if (store.data.helper.name === 'ramka') {
+                let l = store.data.helper.br / 100
+                obl += `border-width :${store.data.helper.thickness}px; border: rgba(241, 213, 0, ${l}) solid;`
+            }
         }
     }
-
-
 
     return obl
 })
@@ -130,7 +133,7 @@ const setOblastPosition3 = computed(() => {
 
             </div>
             <div @click="sendStop" :style="setOblastPosition3" class="position-absolute border-dashed">
-                C
+                {{store.showHelper}}
                 <div v-if="figureRight" :style="store.getFigurePositionCenter()" class="position-relative kek2"></div>
 
             </div>

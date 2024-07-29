@@ -110,6 +110,7 @@ type Figure {
     brightness_min: Int
     brightness_max: Int
     angle: Int
+    show_time: Int
     angles: String
     colors: String
 }

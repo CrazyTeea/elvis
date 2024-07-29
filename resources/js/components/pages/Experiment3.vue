@@ -37,7 +37,7 @@ const btns = ref({
             xx: [],
             yy: [],
             angle_value: 0,
-            show_time: 1000
+            show_time: 2000
         },)
     },
 });

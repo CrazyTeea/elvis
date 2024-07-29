@@ -205,18 +205,19 @@ export const useExperiment3Store = defineStore('experiment3', {
                 this.line.current++
                 this.text += '<p>Ждем сигнал </p>'
 
-                this.beep();
+                //this.beep();
+
                 let ap = new SuperTimer();
                 await ap.timeout(() => {
                     this.showFigure = true
-                    this.text += '<p>Ждем фигуру </p>'
+                    this.text += '<p>Ждем</p>'
                 }, this.line.showDelay);
                 await this.sleep()
                 this.text += '<p>Показываем фигуру </p>'
                 this.timer = new SuperTimer();
 
                 let time = (new Date()).getTime()
-                this.showHelper = true
+
                 let params = {
                     angle,
                     x: this.data.figure.x,
@@ -228,56 +229,47 @@ export const useExperiment3Store = defineStore('experiment3', {
                     y_oblast: this.data.oblast.position.y1
                 }
 
+                ap = new SuperTimer();
+                await ap.timeout(() => {
+                    this.showFigure = false
+                    this.text += '<p>показали фигуру </p>'
+                }, this.data.figure.show_time);
+
+
                 let helperTask = async () => {
+                    this.showHelper = true
+                    let a = new SuperTimer();
+                    await a.timeout(() => {
+                        this.showHelper = false
+                        this.text += '<p>Отключили подсказку </p>'
+                    }, getRandom(this.line.helperRange.min, this.line.helperRange.max))
+
+                }
+
+
+                let clickTask = async () => {
+                    this.timer = new SuperTimer();
                     let time = (new Date()).getTime()
                     try {
                         await this.sleep()
                         await this.timer.timeout(() => {
-                            this.showHelper = false
                             this.showFigure = false
                             this.updateFigure(this.data.figure, {
                                 reaction_time: -1,
                                 ...params
                             })
-                            this.text += '<p>Отключили подсказку </p>'
-                        }, getRandom(this.line.helperRange.min, this.line.helperRange.max))
-                    } catch (e) {
-                        await this.sleep()
-                        this.showFigure = false
-                        this.showHelper = false
-                        let t = (new Date()).getTime() - time
-                        if (localStorage.getItem('react') === 'true') {
-                            axios.post('/experiment/send-com', {name: 'feed',}).catch(e => console.info(e))
-                        }
-                        this.text += '<p>Отключили подсказку </p>'
-                        this.updateFigure(this.data.figure, {
-                            reaction_time: localStorage.getItem('react') === 'true' ? t : -1,
-                            ...params
-                        })
-                    }
-                }
-                this.timer2 = new SuperTimer();
-
-                let clickTask = async () => {
-                    let time = (new Date()).getTime()
-                    try {
-                        await this.sleep()
-                        await this.timer2.timeout(() => {
-                            this.showHelper = false
-                            this.showFigure = false
-                            this.updateFigure(this.data.figure, {
-                                reaction_time: -1,
-                                ...params
-                            })
+                            console.log('не сработало')
                             this.text += '<p>Отключили фигуру </p>'
-                        }, this.data.figure.show_time)
+                        }, this.line.touch)
                     } catch (e) {
                         await this.sleep()
                         this.showFigure = false
-                        this.showHelper = false
+                        console.log('сработало')
                         let t = (new Date()).getTime() - time
                         if (localStorage.getItem('react') === 'true') {
-                            axios.post('/experiment/send-com', {name: 'feed',}).catch(e => console.info(e))
+                            axios
+                                .post('/experiment/send-com', {name: 'feed'})
+                                .catch(e => console.info(e))
                         }
                         this.updateFigure(this.data.figure, {
                             reaction_time: localStorage.getItem('react') === 'true' ? t : -1,
@@ -286,14 +278,12 @@ export const useExperiment3Store = defineStore('experiment3', {
                     }
                 }
 
-                await Promise.all([helperTask, clickTask])
+                await Promise.all([helperTask(), clickTask()])
 
                 this.updateClickPosition(this.data.figure)
                 await this.sleep()
                 this.text += '<p>пауза </p>'
                 ap = new SuperTimer()
-                this.showHelper = false
-                this.showFigure = false
 
                 await ap.timeout(() => {
 
