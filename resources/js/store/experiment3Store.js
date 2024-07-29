@@ -233,11 +233,12 @@ export const useExperiment3Store = defineStore('experiment3', {
                 await ap.timeout(() => {
                     this.showFigure = false
                     this.text += '<p>показали фигуру </p>'
+                    this.showHelper = true
                 }, this.data.figure.show_time);
 
 
                 let helperTask = async () => {
-                    this.showHelper = true
+
                     let a = new SuperTimer();
                     await a.timeout(() => {
                         this.showHelper = false

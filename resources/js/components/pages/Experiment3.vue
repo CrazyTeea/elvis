@@ -68,6 +68,7 @@ onMounted(async () => {
 
 
     bc.addEventListener('message', function (e) {
+        console.log('click')
         experimentStore.stopTimer()
     })
 
