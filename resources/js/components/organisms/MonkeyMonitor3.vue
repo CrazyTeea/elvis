@@ -120,20 +120,16 @@ const setOblastPosition3 = computed(() => {
     <div class="pa-1 h-100 w-100 ">
         <div v-if="active" @click="sendClick" :style="`background-color: rgb(${color} ${color} ${color});`"
              class="wh position-relative border-dashed">
-            <div oncontextmenu="return false" @click="sendStop" :style="setOblastPosition1" class="position-absolute border-dashed">
+            <div oncontextmenu="return false" @click="sendStop" :style="setOblastPosition1" class="position-absolute border-none">
 
-                    A
                     <div v-if="figureLeft" :style="store.getFigurePositionCenter()" class="position-relative kek2"></div>
 
             </div>
-            <div oncontextmenu="return false" @click="sendStop" :style="setOblastPosition2" class="position-absolute border-dashed">
-                B
-
+            <div oncontextmenu="return false" @click="sendStop" :style="setOblastPosition2" class="position-absolute border-none">
                     <div :style="store.getFigurePositionCenter()" class="position-relative kek2"></div>
 
             </div>
-            <div oncontextmenu="return false" @click="sendStop" :style="setOblastPosition3" class="position-absolute border-dashed">
-                {{store.showHelper}}
+            <div oncontextmenu="return false" @click="sendStop" :style="setOblastPosition3" class="position-absolute border-none">
                 <div v-if="figureRight" :style="store.getFigurePositionCenter()" class="position-relative kek2"></div>
 
             </div>
