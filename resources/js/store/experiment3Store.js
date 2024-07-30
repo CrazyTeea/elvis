@@ -182,6 +182,22 @@ export const useExperiment3Store = defineStore('experiment3', {
             this.data.helpers = response.helpers
         },
 
+        saveValues() {
+            localStorage.setItem('line3', JSON.stringify(this.line))
+            localStorage.setItem('data3', JSON.stringify(this.data))
+        },
+
+        restoreValues() {
+            let line = localStorage.getItem('line3');
+            if (line) {
+                this.line = JSON.parse(line)
+            }
+            let data = localStorage.getItem('data3');
+            if (data) {
+                this.data = JSON.parse(data)
+            }
+        },
+
         async runExperiment(figure) {
             this.data.figures = await figure.fetchFigures()
             await this.getHelpers()
@@ -255,6 +271,7 @@ export const useExperiment3Store = defineStore('experiment3', {
                         await this.sleep()
                         await this.timer.timeout(() => {
                             this.showFigure = false
+                            this.showHelper = false
                             this.updateFigure(this.data.figure, {
                                 reaction_time: -1,
                                 ...params
@@ -265,6 +282,7 @@ export const useExperiment3Store = defineStore('experiment3', {
                     } catch (e) {
                         await this.sleep()
                         this.showFigure = false
+                        this.showHelper = false
                         console.log('сработало')
                         let t = (new Date()).getTime() - time
                         if (localStorage.getItem('react') === 'true') {

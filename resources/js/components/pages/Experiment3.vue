@@ -72,9 +72,45 @@ onMounted(async () => {
         experimentStore.stopTimer()
     })
 
+    window.addEventListener('beforeunload', ()=>{
+        console.log('unmount')
+        saveValues()
+        experimentStore.saveValues()
+    })
+
     fPicker.value.btn = 'rectangle3'
 
+    restoreValues()
+    experimentStore.restoreValues()
+
 })
+
+function saveValues() {
+    localStorage.setItem('figures3', JSON.stringify(figures.value))
+    localStorage.setItem('btns3', JSON.stringify(btns.value))
+    localStorage.setItem('oblast3', JSON.stringify(oblast.value))
+    localStorage.setItem('helper3', JSON.stringify(helpers.value))
+}
+
+function restoreValues() {
+    let figs = localStorage.getItem('figures3')
+    if (figs) {
+        figures.value = JSON.parse(figs)
+    }
+    let btts = localStorage.getItem('btns3')
+    if (btts) {
+        btns.value = JSON.parse(btts)
+    }
+    let obl = localStorage.getItem('oblast3')
+    if (obl) {
+        oblast.value = JSON.parse(obl)
+    }
+    let helper3 = localStorage.getItem('figures3')
+    if (helper3) {
+        helpers.value = JSON.parse(helper3)
+    }
+
+}
 
 let helpers = ref([])
 
@@ -144,6 +180,7 @@ const startExperiment = async () => {
     await experimentStore.runExperiment(figure)
 
 }
+
 const stopExperiment = async () => {
     experimentStore.reset(oblast)
     //await window.open('/experiment-1-monitor', '_blank')

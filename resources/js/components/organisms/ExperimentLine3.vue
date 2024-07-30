@@ -67,7 +67,7 @@ const experimentStore = useExperiment3Store()
 <style scoped>
 .input {
     background: rgba(175, 175, 175, 1);
-    width: 70px;
+    width: 80px;
     border-radius: 5px;
     padding-left: 5px;
 }

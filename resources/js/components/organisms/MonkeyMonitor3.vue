@@ -118,7 +118,7 @@ const setOblastPosition3 = computed(() => {
 
 <template>
     <div class="pa-1 h-100 w-100 ">
-        <div v-if="active" @click="sendClick" :style="`background-color: rgb(${color} ${color} ${color});`"
+        <div v-if="active" :style="`background-color: rgb(${color} ${color} ${color});`"
              class="wh position-relative border-dashed">
             <div oncontextmenu="return false" @click="sendStop" :style="setOblastPosition1" class="position-absolute border-none">
 
