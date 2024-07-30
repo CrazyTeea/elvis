@@ -3,6 +3,7 @@ import {getRandom, SuperTimer, toNumber} from "../mixins/utils.js";
 import axios from "axios";
 import svgMixin from "@mixins/svgMixin.js";
 import {GraphqlAPI} from "@/store/api/GraphqlAPI.js";
+import audioFile from "@assets/clicker.m4a";
 
 
 const {triangle} = svgMixin()
@@ -283,9 +284,11 @@ export const useExperiment3Store = defineStore('experiment3', {
                         await this.sleep()
                         this.showFigure = false
                         this.showHelper = false
-                        console.log('сработало')
+                        console.log('сработало', localStorage.getItem('react'))
                         let t = (new Date()).getTime() - time
                         if (localStorage.getItem('react') === 'true') {
+                            const audio = new Audio(audioFile);
+                            await audio.play();
                             axios
                                 .post('/experiment/send-com', {name: 'feed'})
                                 .catch(e => console.info(e))

@@ -30,16 +30,28 @@ function sendClick(event) {
     localStorage.setItem('react', 'false')
 
     bc.postMessage('stop')
-    console.log('click')
+    console.log('click1')
 }
 
-function sendStop(event) {
+function sendStop(event, pos) {
 
     localStorage.setItem('x', event.clientX)
     localStorage.setItem('y', event.clientY)
-    localStorage.setItem('react', 'true')
 
-    console.log('click')
+    let react = false
+
+    if (((store.data.figure.angle < 45 && store.data.figure.angle >= 0)
+        ||
+        (store.data.figure.angle > 200)) && pos === 'right') {
+        react = true
+    }
+    if (store.data.figure.angle >= 45 && pos === 'left') {
+        react = true
+    }
+
+    localStorage.setItem('react', (String)(react))
+
+    console.log('click2')
     bc.postMessage('stop')
 
 }
@@ -98,10 +110,10 @@ const setOblastPosition3 = computed(() => {
     figureRight = false
 
     let obl = `width: ${w}px; height: ${h}px; left: ${left}px; top: 0px;`;
-    if (store.showHelper){
+    if (store.showHelper) {
         if ((store.data.figure.angle < 90 && store.data.figure.angle >= 0)
             ||
-            (store.data.figure.angle > 200) ) {
+            (store.data.figure.angle > 200)) {
             if (store.data.helper.name === 'figure') {
                 figureRight = true
                 let l = store.data.helper.br / 100
@@ -123,32 +135,35 @@ const setOblastPosition3 = computed(() => {
 })
 
 
-
-
 </script>
 
 <template>
     <div class="pa-1 h-100 w-100 ">
-        <div v-if="active" @click="sendClick" :style="`background-color: rgb(${color} ${color} ${color});`"
+        <div v-if="active" :style="`background-color: rgb(${color} ${color} ${color});`"
              class="wh position-relative border-dashed">
-            <div oncontextmenu="return false" @click="sendStop" :style="setOblastPosition1" class="position-absolute border-none">
+            <div oncontextmenu="return false" @click="event=>sendStop(event, 'left')" :style="setOblastPosition1"
+                 class="position-absolute border-dashed">
 
                 <div :style="getOblastPos()" class="position-relative">
-                    <div v-if="figureLeft" :style="store.getFigurePositionCenter()" class="position-absolute kek2"></div>
+                    <div v-if="figureLeft" :style="store.getFigurePositionCenter()"
+                         class="position-absolute kek2"></div>
                 </div>
 
 
             </div>
-            <div oncontextmenu="return false" @click="sendStop" :style="setOblastPosition2" class="position-absolute border-none">
+            <div oncontextmenu="return false" @click="event=>sendStop(event, 'none')" :style="setOblastPosition2"
+                 class="position-absolute border-dashed">
                 <div :style="getOblastPos()" class="position-relative">
                     <div :style="store.getFigurePositionCenter()" class="position-absolute kek2"></div>
                 </div>
 
 
             </div>
-            <div oncontextmenu="return false" @click="sendStop" :style="setOblastPosition3" class="position-absolute border-none">
+            <div oncontextmenu="return false" @click="event=>sendStop(event, 'right')" :style="setOblastPosition3"
+                 class="position-absolute border-dashed">
                 <div :style="getOblastPos()" class="position-relative">
-                    <div v-if="figureRight" :style="store.getFigurePositionCenter()" class="position-absolute kek2"></div>
+                    <div v-if="figureRight" :style="store.getFigurePositionCenter()"
+                         class="position-absolute kek2"></div>
                 </div>
 
             </div>
