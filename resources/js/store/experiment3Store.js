@@ -324,11 +324,14 @@ export const useExperiment3Store = defineStore('experiment3', {
             const {w, color} = this.data.figure;
             return triangle(w, color)
         },
-        getFigurePositionCenter() {
+        getFigurePositionCenter(always) {
             let style = '';
-            if (!this.active || !this.showFigure) {
-                return style
+            if (!always) {
+                if (!this.active || !this.showFigure) {
+                    return style
+                }
             }
+
 
             try {
                 let figure = this.data.figure

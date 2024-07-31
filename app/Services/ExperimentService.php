@@ -294,6 +294,7 @@ class ExperimentService
                 ];
                 $arr[] = [
                     $result->figure->name,
+                    $result->figure->angle >= 0 && $result->figure->angle <= 50 ? 'Вертикальная' : 'Горизонтальная',
                     Figure::COLORS[$result->color],
                     $result->figure->brightness,
                     in_array($result->figure->name, ['rectangle2', 'rectangle3']) ? $result->h : $result->w,
@@ -332,7 +333,7 @@ class ExperimentService
                 ['figure', 'size_min', 'size_max', 'br_min', 'br_max',],
                 ...$figures,
                 [''],
-                ['figure_name', 'color', 'br', 'size', 'x', 'y', 'reaction', 'coord_x', 'coord_y'],
+                ['figure_name', 'Положение','color', 'br', 'size', 'x', 'y', 'reaction', 'coord_x', 'coord_y'],
                 ...$arr
 
             ];

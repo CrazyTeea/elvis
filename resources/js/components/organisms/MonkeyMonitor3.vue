@@ -149,7 +149,8 @@ const setOblastPosition3 = computed(() => {
 
                 <div  class="position-relative">
                     <div :style="getOblastPos()" class="position-absolute kek2">
-                        <div v-if="figureLeft" class="position-relative" :style="store.getFigurePositionCenter()">
+                        {{figureLeft}}
+                        <div v-if="figureLeft" class="position-relative" :style="store.getFigurePositionCenter(true)">
 
                         </div>
                     </div>
@@ -173,7 +174,8 @@ const setOblastPosition3 = computed(() => {
                  class="position-absolute border-dashed">
                 <div  class="position-relative">
                     <div :style="getOblastPos()" class="position-absolute kek2">
-                        <div v-if="figureRight" class="position-relative" :style="store.getFigurePositionCenter()">
+                        {{figureRight}}
+                        <div v-if="figureRight" class="position-relative" :style="store.getFigurePositionCenter(true)">
 
                         </div>
                     </div>
