@@ -56,13 +56,16 @@ function sendStop(event, pos) {
 
 }
 
-function getOblastPos() {
-    let x = store.data.oblast.x1;
-    let y = store.data.oblast.y1;
-    let w = store.data.oblast.x2 - store.data.oblast.x1
-    let h = store.data.oblast.y2 - store.data.oblast.y1
-
-    return `left:${x}px;top:${y}px;width:${w};height:${h};`
+function getOblastPos(props) {
+    let x = store.data.oblast.position.x1;
+    let y = store.data.oblast.position.y1;
+    let w = store.data.oblast.position.x2 - store.data.oblast.position.x1
+    let h = store.data.oblast.position.y2 - store.data.oblast.position.y1
+    console.log({x,y,w,h})
+    if(props){
+        return {x,y,w,h}
+    }
+    return `left:${x}px;top:${y}px;width:${w}px;height:${h}px;`
 }
 
 const setOblastPosition1 = computed(() => {
@@ -144,26 +147,36 @@ const setOblastPosition3 = computed(() => {
             <div oncontextmenu="return false" @click="event=>sendStop(event, 'left')" :style="setOblastPosition1"
                  class="position-absolute border-dashed">
 
-                <div :style="getOblastPos()" class="position-relative">
-                    <div v-if="figureLeft" :style="store.getFigurePositionCenter()"
-                         class="position-absolute kek2"></div>
+                <div  class="position-relative">
+                    <div :style="getOblastPos()" class="position-absolute kek2">
+                        <div v-if="figureLeft" class="position-relative" :style="store.getFigurePositionCenter()">
+
+                        </div>
+                    </div>
                 </div>
 
 
             </div>
             <div oncontextmenu="return false" @click="event=>sendStop(event, 'none')" :style="setOblastPosition2"
                  class="position-absolute border-dashed">
-                <div :style="getOblastPos()" class="position-relative">
-                    <div :style="store.getFigurePositionCenter()" class="position-absolute kek2"></div>
+                <div  class="position-relative">
+                    <div :style="getOblastPos()" class="position-absolute kek2">
+                        <div class="position-relative" :style="store.getFigurePositionCenter()">
+
+                        </div>
+                    </div>
                 </div>
 
 
             </div>
             <div oncontextmenu="return false" @click="event=>sendStop(event, 'right')" :style="setOblastPosition3"
                  class="position-absolute border-dashed">
-                <div :style="getOblastPos()" class="position-relative">
-                    <div v-if="figureRight" :style="store.getFigurePositionCenter()"
-                         class="position-absolute kek2"></div>
+                <div  class="position-relative">
+                    <div :style="getOblastPos()" class="position-absolute kek2">
+                        <div v-if="figureRight" class="position-relative" :style="store.getFigurePositionCenter()">
+
+                        </div>
+                    </div>
                 </div>
 
             </div>

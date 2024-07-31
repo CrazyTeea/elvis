@@ -105,7 +105,7 @@ function restoreValues() {
     if (obl) {
         oblast.value = JSON.parse(obl)
     }
-    let helper3 = localStorage.getItem('figures3')
+    let helper3 = localStorage.getItem('helper3')
     if (helper3) {
         helpers.value = JSON.parse(helper3)
     }
