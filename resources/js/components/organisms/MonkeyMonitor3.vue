@@ -145,7 +145,7 @@ const setOblastPosition3 = computed(() => {
         <div v-if="active" :style="`background-color: rgb(${color} ${color} ${color});`"
              class="wh position-relative border-dashed">
             <div oncontextmenu="return false" @click="event=>sendStop(event, 'left')" :style="setOblastPosition1"
-                 class="position-absolute border-dashed">
+                 class="position-absolute ">
 
                 <div  class="position-relative">
                     <div :style="getOblastPos()" class="position-absolute kek2">
@@ -159,7 +159,7 @@ const setOblastPosition3 = computed(() => {
 
             </div>
             <div oncontextmenu="return false" @click="event=>sendStop(event, 'none')" :style="setOblastPosition2"
-                 class="position-absolute border-dashed">
+                 class="position-absolute">
                 <div  class="position-relative">
                     <div :style="getOblastPos()" class="position-absolute kek2">
                         <div class="position-relative" :style="store.getFigurePositionCenter()">
@@ -171,7 +171,7 @@ const setOblastPosition3 = computed(() => {
 
             </div>
             <div oncontextmenu="return false" @click="event=>sendStop(event, 'right')" :style="setOblastPosition3"
-                 class="position-absolute border-dashed">
+                 class="position-absolute ">
                 <div  class="position-relative">
                     <div :style="getOblastPos()" class="position-absolute kek2">
                         {{figureRight}}
