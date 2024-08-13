@@ -63,18 +63,40 @@ onMounted(async () => {
     chanel.addEventListener('message', function (e) {
         experimentStore.stopTimer()
     })
+
+
+    window.addEventListener('beforeunload', ()=>{
+        console.log('unmount')
+        saveValues()
+        experimentStore.saveValues()
+    })
+
+    restoreValues()
+    experimentStore.restoreValues()
+
 })
 
-const testVal = ref('kek')
-
-const sendCommand = () => {
-
+function saveValues() {
+    localStorage.setItem('stimul3', JSON.stringify(stimuls.value))
+    localStorage.setItem('pos3', JSON.stringify(positions.value))
+    localStorage.setItem('helper2', JSON.stringify(helpers.value))
 }
 
-watch(testVal, () => {
-    sendCommand()
-})
+function restoreValues() {
+    let stim = localStorage.getItem('stimul3')
+    if (stim) {
+        stimuls.value = JSON.parse(stim)
+    }
+    let pos = localStorage.getItem('pos3')
+    if (pos) {
+        positions.value = JSON.parse(pos)
+    }
+    let helper2 = localStorage.getItem('helper2')
+    if (helper2) {
+        helpers.value = JSON.parse(helper2)
+    }
 
+}
 
 const get_files = async () => {
     files.value = await getFiles(2, props.monkey_id)

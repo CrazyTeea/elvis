@@ -60,6 +60,23 @@ export const useExperiment2Store = defineStore('experiment2', {
         }
     },
     actions: {
+
+        saveValues() {
+            localStorage.setItem('line2', JSON.stringify(this.line))
+            localStorage.setItem('data2', JSON.stringify(this.data))
+        },
+
+        restoreValues() {
+            let line = localStorage.getItem('line2');
+            if (line) {
+                this.line = JSON.parse(line)
+            }
+            let data = localStorage.getItem('data2');
+            if (data) {
+                this.data = JSON.parse(data)
+            }
+        },
+
         setActive(val) {
             this.active = val
         },

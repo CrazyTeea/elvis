@@ -58,7 +58,7 @@ const getCSSClass = (name) => {
             <div class="h-100 align-content-center">
                 <div class="d-flex justify-center">
                     <span style="font-size: 12px">Длительность</span>
-                    <input class="ml-2" type="number" v-model="crnVal.length">
+                    <input style="width: 55px" class="ml-2" type="number" v-model="crnVal.length">
                 </div>
             </div>
 
@@ -68,7 +68,7 @@ const getCSSClass = (name) => {
             <div class="h-100 align-content-center">
                 <div class="d-flex justify-center">
                     <span style="font-size: 12px">Частота</span>
-                    <input class="ml-2" type="number" v-model="crnVal.frequency">
+                    <input style="width: 55px" class="ml-2" type="number" v-model="crnVal.frequency">
                 </div>
             </div>
 

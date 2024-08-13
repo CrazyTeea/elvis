@@ -323,21 +323,21 @@ const delete_file = async (id) => {
                                     <v-card-text>
                                         <div>
                                             <div class="d-flex justify-space-around">
-                                                <input style="width: 50px" id="x2" v-model="oblast.options.position.x1"
+                                                <input style="width: 55px" id="x2" v-model="oblast.options.position.x1"
                                                        placeholder="x1"
                                                        type="number">
                                                 <div class="ml-2 mr-2">-</div>
-                                                <input style="width: 50px" id="y1" v-model="oblast.options.position.y1"
+                                                <input style="width: 55px" id="y1" v-model="oblast.options.position.y1"
                                                        placeholder="y1"
                                                        type="number">
                                             </div>
 
                                             <div class="d-flex mt-2 justify-space-around">
-                                                <input style="width: 50px" id="x2" v-model="oblast.options.position.x2"
+                                                <input style="width: 55px" id="x2" v-model="oblast.options.position.x2"
                                                        placeholder="x2"
                                                        type="number">
                                                 <div class="ml-2 mr-2">-</div>
-                                                <input style="width: 50px" id="y2" v-model="oblast.options.position.y2"
+                                                <input style="width: 55px" id="y2" v-model="oblast.options.position.y2"
                                                        placeholder="y2"
                                                        type="number">
                                             </div>
@@ -512,7 +512,7 @@ const delete_file = async (id) => {
 input {
     border: 1px solid white;
     border-radius: 15%;
-    width: 50px;
+    width: 55px;
     height: 35px;
 }
 </style>

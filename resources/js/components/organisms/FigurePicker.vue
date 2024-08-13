@@ -121,7 +121,7 @@ const round = computed(() => {
 <template>
     <v-row>
         <v-col class="d-flex justify-center">
-            <v-card class="shadow rounded1" width="125" height="127">
+            <v-card class="shadow rounded1" width="135" height="127">
                 <v-card-text>
                     <div class="d-flex justify-center" style="height: 60px">
                         <div class="v-btn--variant-outlined rounded-pill rounded" :style="round.div_1_w"
@@ -131,9 +131,9 @@ const round = computed(() => {
                         <div></div>
                     </div>
                     <div class="d-flex justify-space-around">
-                        <input style="width: 50px; border: 1px solid white" v-model="values.size.min" type="number">
+                        <input style="width: 55px; border: 1px solid white" v-model="values.size.min" type="number">
                         <div>-</div>
-                        <input style="width: 50px; border: 1px solid white" v-model="values.size.max" type="number">
+                        <input style="width: 55px; border: 1px solid white" v-model="values.size.max" type="number">
                     </div>
                     <p class="text-center">Размер</p>
 

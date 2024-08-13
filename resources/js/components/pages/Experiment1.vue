@@ -504,7 +504,7 @@ const delete_file = async (id)=>{
 input {
     border: 1px solid white;
     border-radius: 15%;
-    width: 50px;
+    width: 55px;
     height: 35px;
 }
 </style>

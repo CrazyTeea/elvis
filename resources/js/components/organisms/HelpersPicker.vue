@@ -135,7 +135,7 @@ let btnHandler = function (name) {
                     <div class="h-100 align-content-center">
                         <div class="d-flex justify-center">
                             <span style="font-size: 12px">Яркость</span>
-                            <input style="width: 50px; font-size: 12px" class="ml-2" type="number"
+                            <input style="width: 55px; font-size: 12px" class="ml-2" type="number"
                                    v-model="crntType.brightness">
                         </div>
                     </div>
@@ -144,7 +144,7 @@ let btnHandler = function (name) {
                     <div class="h-100 align-content-center">
                         <div class="d-flex justify-center">
                             <span style="font-size: 12px">Толщина контура</span>
-                            <input style="width: 50px; font-size: 12px" class="ml-2" type="number"
+                            <input style="width: 55px; font-size: 12px" class="ml-2" type="number"
                                    v-model="crntType.thickness">
                         </div>
                     </div>
@@ -153,7 +153,7 @@ let btnHandler = function (name) {
                     <div class="h-100 align-content-center">
                         <div class="d-flex justify-center">
                             <span style="font-size: 12px">Отступ</span>
-                            <input style="width: 50px; font-size: 12px" class="ml-2" type="number"
+                            <input style="width: 55px; font-size: 12px" class="ml-2" type="number"
                                    v-model="crntType.offset">
                         </div>
                     </div>
