@@ -32,6 +32,7 @@ export const useExperiment2Store = defineStore('experiment2', {
                 currentProb: 0,
                 startDelay: 1000,
                 showHelpers: false,
+                canClick: false,
                 crntHelper: {},
                 startHelp: {
                     min: 1000,
@@ -188,42 +189,37 @@ export const useExperiment2Store = defineStore('experiment2', {
                 this.beep();
                 let time = (new Date()).getTime()
                 let reaction = -1
-                this.timer = new SuperTimer()
-                await (async () => {
+
+
+                let signalTask = async () => {
+                    let t = new SuperTimer()
+                    await t.timeout(() => {
+                        this.comment += "<p>Сигнал ждем</p>"
+                        this.sendStimul()
+                    }, this.line.startDelay)
+
+                }
+
+                let helperTask = async () => {
+                    this.comment += "<p>стимул</p>"
+                    let t = new SuperTimer()
+                    await t.timeout(() => {
+                        this.comment += "<p>Пауза перед подсказкой</p>"
+                        this.line.showHelpers = true
+                        this.line.canClick = true
+                    }, (+this.stimul.length) + getRandom(this.line.startHelp.min, this.line.startHelp.max))
+                }
+
+                let touchTask = async () => {
+                    this.comment += "<p>подсказка</p>"
+                    this.timer = new SuperTimer()
                     try {
-
-                        let signalTask = async ()=> {
-                            this.timer = new SuperTimer()
-                            await this.timer.timeout(() => {
-                                this.comment += "<p>Сигнал ждем</p>"
-                                this.sendStimul()
-                            }, this.line.startDelay)
-
-                        }
-
-                        let helperTask = async () => {
-                            this.comment += "<p>стимул</p>"
-
-                            this.timer2 = new SuperTimer()
-                            await this.timer2.timeout(() => {
-                                this.comment += "<p>Пауза перед подсказкой</p>"
-                                this.line.showHelpers = true
-                            }, (+this.stimul.length) + getRandom(this.line.startHelp.min, this.line.startHelp.max))
-
-                            this.comment += "<p>подсказка</p>"
-                            this.timer3 = new SuperTimer()
-                            await this.timer.timeout(() => {
-                                this.line.showHelpers = false
-                                this.comment += "<p>Пауза перед подсказкой</p>"
-                            }, getRandom(this.line.waitQuestion.min, this.line.waitQuestion.max))
-                        }
-
-                        await Promise.all([signalTask(), helperTask()])
-
-
-
-
-                    } catch (e) {
+                        await this.timer.timeout(() => {
+                            this.line.showHelpers = false
+                            this.line.canClick = false
+                            this.comment += "<p>Пауза перед подсказкой</p>"
+                        }, getRandom(this.line.waitQuestion.min, this.line.waitQuestion.max))
+                    } catch (e){
                         let t = (new Date()).getTime() - time
 
                         reaction = localStorage.getItem('react') === 'true' ? t : -1
@@ -235,8 +231,12 @@ export const useExperiment2Store = defineStore('experiment2', {
                         }
 
                         this.line.showHelpers = false
+                        this.line.canClick = false
                     }
-                })()
+
+                }
+
+                await Promise.all([signalTask(), helperTask(), touchTask()])
 
 
                 let t = new SuperTimer()

@@ -64,7 +64,7 @@ const setOblastPosition = () => {
         if (store.line.showHelpers) {
             if (props.line.crntHelper?.name === 'oblast') {
                 let l = props.line.crntHelper.br / 100
-                s += `background-color: rgba(241, 213, 0, ${l}); `
+                s += `background-color: rgba(255, 255, 255, ${l}); `
             }
             if (props.line.crntHelper?.name === 'ramka') {
                 let l = props.line.crntHelper.br / 100
@@ -84,24 +84,30 @@ onDeactivated(() => {
 let btnq = false
 
 const stopClk = (evt) => {
-    localStorage.setItem('x_clk', evt.clientX)
-    localStorage.setItem('y_clk', evt.clientY)
-    btnq = true
-    localStorage.setItem('react', `${btnq}`)
-    console.log(btnq)
+    if (store.line.canClick){
+        localStorage.setItem('x_clk', evt.clientX)
+        localStorage.setItem('y_clk', evt.clientY)
+        btnq = true
+        localStorage.setItem('react', `${btnq}`)
+        console.log(btnq)
 
-    chanel.postMessage('stop')
+        chanel.postMessage('stop')
+    }
+
 }
 
 const btnClick = (evt) => {
-    localStorage.setItem('x_clk', evt.clientX)
-    localStorage.setItem('y_clk', evt.clientY)
-    if (!btnq) {
-        localStorage.setItem('react', 'false')
+    if (store.line.canClick){
+        localStorage.setItem('x_clk', evt.clientX)
+        localStorage.setItem('y_clk', evt.clientY)
+        if (!btnq) {
+            localStorage.setItem('react', 'false')
+        }
+        btnq = false
+        console.log("true2")
+        chanel.postMessage('stop')
     }
-    btnq = false
-    console.log("true2")
-    chanel.postMessage('stop')
+
 }
 
 </script>
