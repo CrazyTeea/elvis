@@ -145,6 +145,10 @@ export const useExperiment2Store = defineStore('experiment2', {
                 '      experiment_id\n' +
                 '      br\n' +
                 '      offset\n' +
+                '      offsetX\n' +
+                '      offsetY\n' +
+                '      brTrue\n' +
+                '      brFalse\n' +
                 '    }\n' +
                 '    stimuls {\n' +
                 '      name\n' +

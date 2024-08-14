@@ -42,21 +42,21 @@ const setOblastPosition = () => {
         const {width, height} = b.getBoundingClientRect();
         wh.value = {w: width / 2, h: height / 2}
         let {x, y, w, h} = ramki.value[props.position]
-        w-=props.line.crntHelper.offset
-        h-=props.line.crntHelper.offset
+        w-=props.line.crntHelper.offsetX
+        h-=props.line.crntHelper.offsetY
         switch (props.position) {
             case 'bottom-right':{
-                x+=props.line.crntHelper.offset
-                y+=props.line.crntHelper.offset
+                x+=props.line.crntHelper.offsetX
+                y+=props.line.crntHelper.offsetY
                 break;
             }
             case 'top-right': {
-                x+=props.line.crntHelper.offset
+                x+=props.line.crntHelper.offsetX
 
                 break;
             }
             case 'bottom-left': {
-                y+=props.line.crntHelper.offset
+                y+=props.line.crntHelper.offsetY
                 break;
             }
         }

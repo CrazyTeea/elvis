@@ -37,6 +37,10 @@ class Helpers extends Model
         'name',
         'br',
         'thickness',
-        'offset'
+        'offset',
+        'offsetX',
+        'offsetY',
+        'brTrue',
+        'brFalse',
     ];
 }

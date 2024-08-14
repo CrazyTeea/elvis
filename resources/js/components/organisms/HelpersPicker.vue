@@ -7,41 +7,57 @@ const crntType = ref({
     name: '',
     thickness: 0,
     brightness: 0,
-    offset:0
+    offset: 0
 })
-const helpers = ref([])
+const helpers = ref(model.value)
 const types = ref({
     'ramka': {
         name: 'ramka',
         click: false,
         thickness: 0,
         brightness: 0,
-        offset:0
+        brFalse: 0,
+        brTrue: 0,
+        offset: 0,
+        offsetX: 0,
+        offsetY: 0
     },
     'oblast': {
         name: 'oblast',
         click: false,
         thickness: 0,
         brightness: 0,
-        offset:0
+        brFalse: 0,
+        brTrue: 0,
+        offset: 0,
+        offsetX: 0,
+        offsetY: 0
     },
     'none': {
         name: 'none',
         click: false,
         thickness: 0,
         brightness: 0,
-        offset:0
+        brFalse: 0,
+        brTrue: 0,
+        offset: 0,
+        offsetX: 0,
+        offsetY: 0
     },
     'figure': {
         name: 'figure',
         click: false,
         thickness: 0,
         brightness: 0,
-        offset:0
+        brFalse: 0,
+        brTrue: 0,
+        offset: 0,
+        offsetX: 0,
+        offsetY: 0
     }
 })
 const props = defineProps({
-    experiment3:Boolean
+    experiment3: Boolean
 })
 
 let getStyleButton = function (t) {
@@ -72,6 +88,19 @@ watch(crntType, () => {
         model.value[index] = obj
     }
 }, {deep: true})
+
+onMounted(() => {
+    for (let item of helpers.value) {
+        item.click = true
+        types.value[item.name] = item
+    }
+    let item = helpers.value.at(helpers.value.length-1);
+    if (item) {
+        crntType.value = types.value[item.name]
+    }
+
+})
+
 let btnHandler = function (name) {
     types.value[name].click = !types.value[name].click
     let index = helpers.value.findIndex(item => {
@@ -83,7 +112,7 @@ let btnHandler = function (name) {
         crntType.value = {
             name, thickness: 0,
             brightness: 0,
-            offset:0
+            offset: 0
         }
         if (index === -1) {
             helpers.value.push({...crntType.value})
@@ -128,6 +157,46 @@ let btnHandler = function (name) {
             </v-card>
         </div>
         <div>
+            <div v-if="!experiment3 && typeText === 'oblast'" class="d-flex mt-5 justify-center ga-5">
+                <v-card class="rounded1 shadow pa-2" width="200">
+                    <div class="h-100 align-content-center">
+                        <div class="d-flex justify-center">
+                            <span style="font-size: 12px">Отступ Х</span>
+                            <input style="width: 55px; font-size: 12px" class="ml-2" type="number"
+                                   v-model="crntType.offsetX">
+                        </div>
+                    </div>
+                </v-card>
+                <v-card class="rounded1 pa-2 shadow" width="200">
+                    <div class="h-100 align-content-center">
+                        <div class="d-flex justify-center">
+                            <span style="font-size: 12px">Отступ У</span>
+                            <input style="width: 55px; font-size: 12px" class="ml-2" type="number"
+                                   v-model="crntType.offsetY">
+                        </div>
+                    </div>
+                </v-card>
+            </div>
+            <div v-if="experiment3 && typeText === 'oblast'" class="d-flex mt-5 justify-center ga-5">
+                <v-card class="rounded1 shadow pa-2" width="200">
+                    <div class="h-100 align-content-center">
+                        <div class="d-flex justify-center">
+                            <span style="font-size: 12px">Верная область</span>
+                            <input style="width: 55px; font-size: 12px" class="ml-2" type="number"
+                                   v-model="crntType.brTrue">
+                        </div>
+                    </div>
+                </v-card>
+                <v-card class="rounded1 pa-2 shadow" width="200">
+                    <div class="h-100 align-content-center">
+                        <div class="d-flex justify-center">
+                            <span style="font-size: 12px">Не верная область</span>
+                            <input style="width: 55px; font-size: 12px" class="ml-2" type="number"
+                                   v-model="crntType.brFalse">
+                        </div>
+                    </div>
+                </v-card>
+            </div>
             <div class="d-flex mt-5 justify-center ga-5">
                 <v-card v-if="typeText === 'oblast' || typeText === 'ramka'"
                         class="rounded1 shadow pa-2"

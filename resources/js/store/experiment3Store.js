@@ -177,6 +177,10 @@ export const useExperiment3Store = defineStore('experiment3', {
                 '      experiment_id\n' +
                 '      br\n' +
                 '      offset\n' +
+                '      offsetX\n' +
+                '      offsetY\n' +
+                '      brTrue\n' +
+                '      brFalse\n' +
                 '    }\n' +
                 '    '
             let response = await GraphqlAPI.get_api('experiment', {id: this.id}, columns)

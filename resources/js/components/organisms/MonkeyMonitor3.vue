@@ -79,7 +79,7 @@ const setOblastPosition1 = computed(() => {
     let obl = `width: ${w}px; height: ${h}px; left: 1px; top: 0px;`;
 
     if (store.showHelper) {
-        if (store.data.figure.angle >= 45) {
+
             if (store.data.helper.name === 'figure') {
                 figureLeft = true
                 let l = store.data.helper.br / 100
@@ -87,15 +87,16 @@ const setOblastPosition1 = computed(() => {
             }
 
             if (store.data.helper.name === 'oblast') {
-                let l = store.data.helper.br / 100
-                obl += `background-color: rgba(241, 213, 0, ${l}); `
+                let l = store.data.figure.angle >= 45 ? store.data.helper.brTrue / 100 : store.data.helper.brFalse / 100
+
+                obl += `background-color: rgba(255, 255, 255, ${l}); `
             }
 
             if (store.data.helper.name === 'ramka') {
                 let l = store.data.helper.br / 100
                 obl += `border-width :${store.data.helper.thickness}px; border: rgba(241, 213, 0, ${l}) solid;`
             }
-        }
+
     }
 
     return obl;
@@ -114,24 +115,24 @@ const setOblastPosition3 = computed(() => {
 
     let obl = `width: ${w}px; height: ${h}px; left: ${left}px; top: 0px;`;
     if (store.showHelper) {
-        if ((store.data.figure.angle < 90 && store.data.figure.angle >= 0)
-            ||
-            (store.data.figure.angle > 200)) {
+
             if (store.data.helper.name === 'figure') {
                 figureRight = true
                 let l = store.data.helper.br / 100
                 obl += `background-color: rgba(241, 213, 0, ${l}); `
             }
             if (store.data.helper.name === 'oblast') {
-                let l = store.data.helper.br / 100
-                obl += `background-color: rgba(241, 213, 0, ${l}); `
+                let l = (store.data.figure.angle < 90 && store.data.figure.angle >= 0)
+                    ||
+                    (store.data.figure.angle > 200) ? store.data.helper.brTrue / 100 : store.data.helper.brFalse / 100
+                obl += `background-color: rgba(255, 255, 255, ${l}); `
             }
 
             if (store.data.helper.name === 'ramka') {
                 let l = store.data.helper.br / 100
                 obl += `border-width :${store.data.helper.thickness}px; border: rgba(241, 213, 0, ${l}) solid;`
             }
-        }
+
     }
 
     return obl
@@ -158,7 +159,7 @@ const setOblastPosition3 = computed(() => {
 
 
             </div>
-            <div oncontextmenu="return false" @click="event=>sendStop(event, 'none')" :style="setOblastPosition2"
+            <div oncontextmenu="return false" :style="setOblastPosition2"
                  class="position-absolute">
                 <div  class="position-relative">
                     <div :style="getOblastPos()" class="position-absolute kek2">

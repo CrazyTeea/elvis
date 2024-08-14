@@ -17,6 +17,10 @@ type Helpers {
     br: Int
     thickness: Int
     offset: Int
+    offsetX: Int
+    offsetY: Int
+    brTrue: Int
+    brFalse: Int
 }
 
 type Stimul {
