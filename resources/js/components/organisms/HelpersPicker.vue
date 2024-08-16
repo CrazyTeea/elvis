@@ -218,15 +218,6 @@ let btnHandler = function (name) {
                         </div>
                     </div>
                 </v-card>
-                <v-card v-if="!experiment3" class="rounded1 pa-2 shadow" width="200">
-                    <div class="h-100 align-content-center">
-                        <div class="d-flex justify-center">
-                            <span style="font-size: 12px">Отступ</span>
-                            <input style="width: 55px; font-size: 12px" class="ml-2" type="number"
-                                   v-model="crntType.offset">
-                        </div>
-                    </div>
-                </v-card>
             </div>
         </div>
     </div>
