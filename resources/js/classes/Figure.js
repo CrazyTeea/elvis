@@ -134,7 +134,7 @@ export class Figure {
                     f.h = Math.ceil(getRandom(f.size_min, f.size_max) / 3)
                     f.w = Math.ceil(getRandom(f.size_min, f.size_max) / 2)
                 } else if (f.name === 'rectangle3') {
-                    f.w = 5;
+                    f.w = 15;
                     f.h = getRandom(f.size_min, f.size_max);
                 } else {
                     f.h = getRandom(f.size_min, f.size_max);

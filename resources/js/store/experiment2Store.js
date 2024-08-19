@@ -235,7 +235,7 @@ export const useExperiment2Store = defineStore('experiment2', {
                             //this.beep(500, 500)
                             const audio = new Audio(audioFile);
                             await audio.play();
-                            axios.post('/experiment/send-com', {name: 'feed',}).catch(e => console.info(e))
+                            axios.post('/experiment/send-com', {name: 'feed',})
                         }
 
                         this.line.showHelpers = false

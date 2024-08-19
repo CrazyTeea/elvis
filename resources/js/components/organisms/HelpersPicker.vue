@@ -198,7 +198,7 @@ let btnHandler = function (name) {
                 </v-card>
             </div>
             <div class="d-flex mt-5 justify-center ga-5">
-                <v-card v-if="typeText === 'oblast' || typeText === 'ramka'"
+                <v-card v-if="typeText === 'ramka' || typeText === 'oblast'"
                         class="rounded1 shadow pa-2"
                         width="200">
                     <div class="h-100 align-content-center">
