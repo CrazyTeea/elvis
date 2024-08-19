@@ -226,18 +226,8 @@ export const useExperiment3Store = defineStore('experiment3', {
                 this.line.current++
                 this.text += '<p>Ждем сигнал </p>'
 
-                this.beep();
 
-                let ap = new SuperTimer();
-                await ap.timeout(() => {
-                    this.showFigure = true
-                    this.text += '<p>Ждем</p>'
-                }, this.line.showDelay);
-                await this.sleep()
-                this.text += '<p>Показываем фигуру </p>'
-                this.timer = new SuperTimer();
 
-                let time = (new Date()).getTime()
 
                 let params = {
                     angle,
@@ -250,12 +240,26 @@ export const useExperiment3Store = defineStore('experiment3', {
                     y_oblast: this.data.oblast.position.y1
                 }
 
-                ap = new SuperTimer();
-                await ap.timeout(() => {
-                    this.showFigure = false
-                    this.text += '<p>показали фигуру </p>'
-                    this.showHelper = true
-                }, this.data.figure.show_time);
+
+
+                let figureTask = async () => {
+                    this.beep();
+                    this.text += '<p>Показываем фигуру </p>'
+                    let ap = new SuperTimer();
+                    await ap.timeout(() => {
+                        this.showFigure = true
+                        this.text += '<p>Ждем</p>'
+                    }, this.line.showDelay);
+
+                    await this.sleep()
+
+                    ap = new SuperTimer();
+                    await ap.timeout(() => {
+                        this.showFigure = false
+                        this.text += '<p>показали фигуру </p>'
+                        this.showHelper = true
+                    }, this.data.figure.show_time);
+                }
 
 
                 let helperTask = async () => {
@@ -304,12 +308,12 @@ export const useExperiment3Store = defineStore('experiment3', {
                     }
                 }
 
-                await Promise.all([helperTask(), clickTask()])
+                await Promise.all([figureTask(),helperTask(), clickTask()])
 
                 this.updateClickPosition(this.data.figure)
                 await this.sleep()
                 this.text += '<p>пауза </p>'
-                ap = new SuperTimer()
+                let ap = new SuperTimer()
 
                 await ap.timeout(() => {
 
