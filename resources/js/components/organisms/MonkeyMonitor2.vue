@@ -67,11 +67,26 @@ const setHelpers = (pos) => {
         let y = 0;
         w -= 10
         h -= 10
-
-        x += props.line.crntHelper.offsetX
         w -= props.line.crntHelper.offsetX
-        y += props.line.crntHelper.offsetY
         h -= props.line.crntHelper.offsetY
+        switch (pos) {
+
+            case 'top-right':{
+                x += props.line.crntHelper.offsetX
+                break;
+            }
+            case 'bottom-left': {
+                y += props.line.crntHelper.offsetY
+                break;
+            }
+            case 'bottom-right': {
+                x += props.line.crntHelper.offsetX
+                y += props.line.crntHelper.offsetY
+                break;
+            }
+        }
+
+
 
         let s = `width: ${w}px; height: ${h}px;  left: ${x}px; top: ${y}px;`;
         if (props.line.showHelpers) {

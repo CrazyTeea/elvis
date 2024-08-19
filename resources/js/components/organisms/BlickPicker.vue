@@ -3,8 +3,8 @@
 import {ref, watch} from "vue";
 
 const model = defineModel()
-
-const crnVal = ref({})
+let k = model.value.at(model.value.length-1);
+const crnVal = ref(k ?? {})
 const btnHandler = (e, values) => {
     let i = model.value.findIndex((e) => e.name === values.name)
     if (i !== -1) {
