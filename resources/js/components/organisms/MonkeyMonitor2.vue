@@ -159,7 +159,8 @@ const btnClick = (evt) => {
             <hr :style="lineStyle.vert" class="position-absolute  border-none">
             <hr :style="lineStyle.hor" class="position-absolute  border-none">
             <div :style="setOblastPosition('top-left')" ref="boxl"
-
+                 @mousemove="event=>stopClk(event, 'top-left')"
+                 @mouseover="event=>stopClk(event, 'top-left')"
                  @click="event=>stopClk(event, 'top-left')"
                  class="position-absolute ">
                 <div :style="setHelpers('top-left')" class="position-relative ">
@@ -174,14 +175,16 @@ const btnClick = (evt) => {
                 </div>
             </div>
             <div :style="setOblastPosition('bottom-left')" ref="boxbl"
-
+                 @mousemove="event=>stopClk(event, 'bottom-left')"
+                 @mouseover="event=>stopClk(event, 'bottom-left')"
                  @click="event=>stopClk(event, 'bottom-left')"
                  class="position-absolute ">
                 <div :style="setHelpers('bottom-left')" class="position-relative ">
                 </div>
             </div>
             <div :style="setOblastPosition('bottom-right')" ref="boxbr"
-
+                 @mousemove="event=>stopClk(event, 'bottom-right')"
+                 @mouseover="event=>stopClk(event, 'bottom-right')"
                  @click="event=>stopClk(event, 'bottom-right')"
                  class="position-absolute  ">
                 <div :style="setHelpers('bottom-right')" class="position-relative ">

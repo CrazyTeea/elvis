@@ -254,7 +254,7 @@ export const useExperiment2Store = defineStore('experiment2', {
                 let touchTask = async () => {
                     this.comment += "<p>тыканье старт</p>"
                     this.timer = new SuperTimer()
-                    let t = getRandom(this.line.waitQuestion.min, this.line.waitQuestion.max)
+                    let t = getRandom(this.line.waitQuestion.min, this.line.waitQuestion.max) + (+this.stimul.length) + getRandom(this.line.startHelp.min, this.line.startHelp.max)
                     console.log('ожидание', t)
                     try {
                         await this.timer.timeout(() => {
