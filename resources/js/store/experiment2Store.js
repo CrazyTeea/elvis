@@ -4,6 +4,7 @@ import axios from "axios";
 import {GraphqlAPI} from "@/store/api/GraphqlAPI.js";
 import {reactive, ref} from "vue";
 import audioFile from '@assets/clicker.m4a'
+import Timeout from 'await-timeout'
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
 
@@ -100,8 +101,12 @@ export const useExperiment2Store = defineStore('experiment2', {
         },
 
         sendStimul() {
-            axios.post(`/experiment/send-com`, {...this.stimul, position: this.position}).catch(() => {
-            })
+            try {
+                axios.post(`/experiment/send-com`, {...this.stimul, position: this.position})
+            }catch (e) {
+
+            }
+
         },
 
         beep(duration, frequency, volume, type, callback) {
@@ -184,50 +189,80 @@ export const useExperiment2Store = defineStore('experiment2', {
             await this.getExperimentData()
 
             this.setActive(true)
+            try {
+                await Timeout.set(100, 'kek')
+            } catch (e) {
+
+            }
             while (this.line.currentProb < this.line.countProbs) {
+                this.setActive(true)
                 this.line.crntHelper = this.data.helpers.at(getRandom(0, this.data.helpers.length - 1))
                 this.position = this.data.positions.at(getRandom(0, this.data.positions.length - 1))
                 this.stimul = this.data.stimuls.at(getRandom(0, this.data.stimuls.length - 1))
                 this.line.currentProb++
 
 
-                let time = (new Date()).getTime()
                 let reaction = -1
 
 
-                let signalTask = async () => {
-                    this.beep();
-                    this.comment += "<p>Сигнал</p>"
-                    let t = new SuperTimer()
-                    await t.timeout(() => {
+                this.beep();
+                this.comment += "<p>Сигнал</p>"
+
+                console.log('ждем', this.line.startDelay)
+                let time = (new Date()).getTime()
+
+                try {
+                    await Timeout.set(this.line.startDelay, () => {
                         this.comment += "<p>Сигнал отправлен</p>"
                         this.sendStimul()
-                    }, this.line.startDelay)
-                    this.comment += "<p>Сигнал прошел</p>"
+                    })
+                } catch (e) {
 
                 }
 
+                let end = (new Date()).getTime() - time
+                console.log('закончили ждем', this.line.startDelay, end)
+
+
+                this.comment += "<p>Сигнал прошел</p>"
+
+
                 let helperTask = async () => {
                     this.comment += "<p>стимул старт</p>"
-                    let t = new SuperTimer()
-                    await t.timeout(() => {
-                        this.comment += "<p>стимул</p>"
-                        this.line.showHelpers = true
-                        this.line.canClick = true
-                    }, (+this.stimul.length) + getRandom(this.line.startHelp.min, this.line.startHelp.max))
+
+                    let t = (+this.stimul.length) + getRandom(this.line.startHelp.min, this.line.startHelp.max);
+
+                    console.log('подсказка через',t)
+
+                    time = (new Date()).getTime()
+
+                    try {
+                        await Timeout.set(t, () => {
+                                this.comment += "<p>стимул</p>"
+                                this.line.showHelpers = true
+                                this.line.canClick = true
+                            })
+                    } catch (e) {
+
+                    }
+                    end = (new Date()).getTime() - time
+                    console.log('подсказка показана',t, end)
+
                     this.comment += "<p>стимул конец</p>"
                 }
 
                 let touchTask = async () => {
                     this.comment += "<p>тыканье старт</p>"
                     this.timer = new SuperTimer()
+                    let t = getRandom(this.line.waitQuestion.min, this.line.waitQuestion.max)
+                    console.log('ожидание', t)
                     try {
                         await this.timer.timeout(() => {
                             this.line.showHelpers = false
                             this.line.canClick = false
                             this.comment += "<p>не тыкнул</p>"
-                        }, getRandom(this.line.waitQuestion.min, this.line.waitQuestion.max))
-                    } catch (e){
+                        }, t)
+                    } catch (e) {
                         let t = (new Date()).getTime() - time
                         this.comment += "<p>тыкнул</p>"
                         reaction = localStorage.getItem('react') === 'true' ? t : -1
@@ -241,21 +276,22 @@ export const useExperiment2Store = defineStore('experiment2', {
                         this.line.showHelpers = false
                         this.line.canClick = false
                     }
+                    end = (new Date()).getTime() - time
+                    console.log('ожидание все', t, end)
                     this.comment += "<p>тыканье конец</p>"
 
                 }
 
                 this.comment += "<p>ожидаем функции</p>"
 
-                await Promise.all([signalTask(), helperTask(), touchTask()])
+                await Promise.all([helperTask(), touchTask()])
                 this.comment += "<p>конец функции</p>"
 
+                try {
+                    await Timeout.set(getRandom(this.line.stopDelay.min, this.line.stopDelay.max), 'Stop!!!')
+                } catch (e) {
 
-                let t = new SuperTimer()
-                this.comment += "<p>Пауза перед этапом</p>"
-                await t.timeout(() => {
-                    this.comment += "<p>конец паузы</p>"
-                }, getRandom(this.line.stopDelay.min, this.line.stopDelay.max))
+                }
 
 
                 this.results.push({
