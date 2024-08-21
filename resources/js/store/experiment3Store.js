@@ -4,6 +4,7 @@ import axios from "axios";
 import svgMixin from "@mixins/svgMixin.js";
 import {GraphqlAPI} from "@/store/api/GraphqlAPI.js";
 import audioFile from "@assets/clicker.m4a";
+import Timeout from "await-timeout";
 
 
 const {triangle} = svgMixin()
@@ -210,6 +211,11 @@ export const useExperiment3Store = defineStore('experiment3', {
             this.data.figure_results = []
 
             this.setActive(true)
+            try {
+                await Timeout.set(100, 'kek')
+            } catch (e) {
+
+            }
 
             while (this.line.current < this.line.maxCount) {
                 await this.sleep()
