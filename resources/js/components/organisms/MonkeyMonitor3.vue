@@ -80,7 +80,7 @@ const setOblastPosition1 = computed(() => {
 
     let obl = `width: ${w}px; height: ${h}px; left: 1px; top: 0px;`;
 
-    if (store.showHelper && store.showFigure) {
+    if (store.showHelper && store.canClick) {
 
             if (store.data.helper.name === 'figure') {
                 figureLeft = true
@@ -116,7 +116,7 @@ const setOblastPosition3 = computed(() => {
     figureRight = false
 
     let obl = `width: ${w}px; height: ${h}px; left: ${left}px; top: 0px;`;
-    if (store.showHelper && store.showFigure) {
+    if (store.showHelper && store.canClick) {
 
             if (store.data.helper.name === 'figure') {
                 figureRight = true
