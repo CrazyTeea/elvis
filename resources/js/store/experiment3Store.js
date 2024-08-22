@@ -221,7 +221,7 @@ export const useExperiment3Store = defineStore('experiment3', {
             this.data.figure_results = []
 
             this.setActive(true)
-            await tryTimeout(200, 'kek')
+            await tryTimeout(500, 'kek')
 
             while (this.line.current < this.line.maxCount) {
                 await this.sleep()
