@@ -34,25 +34,27 @@ function sendClick(event) {
 }
 
 function sendStop(event, pos) {
+    if (store.canClick) {
+        localStorage.setItem('x', event.clientX)
+        localStorage.setItem('y', event.clientY)
 
-    localStorage.setItem('x', event.clientX)
-    localStorage.setItem('y', event.clientY)
+        let react = false
 
-    let react = false
+        if (((store.data.figure.angle < 45 && store.data.figure.angle >= 0)
+            ||
+            (store.data.figure.angle > 200)) && pos === 'right') {
+            react = true
+        }
+        if (store.data.figure.angle >= 45 && pos === 'left') {
+            react = true
+        }
 
-    if (((store.data.figure.angle < 45 && store.data.figure.angle >= 0)
-        ||
-        (store.data.figure.angle > 200)) && pos === 'right') {
-        react = true
+        localStorage.setItem('react', (String)(react))
+
+        console.log('click2')
+        bc.postMessage('stop')
     }
-    if (store.data.figure.angle >= 45 && pos === 'left') {
-        react = true
-    }
 
-    localStorage.setItem('react', (String)(react))
-
-    console.log('click2')
-    bc.postMessage('stop')
 
 }
 

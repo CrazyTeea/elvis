@@ -9,6 +9,15 @@ import Timeout from "await-timeout";
 
 const {triangle} = svgMixin()
 const audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
+
+async function tryTimeout(delay, func) {
+    try {
+        await Timeout.set(delay, func);
+    }catch (e) {
+
+    }
+}
+
 export const useExperiment3Store = defineStore('experiment3', {
     state: () => {
         return {
@@ -32,6 +41,7 @@ export const useExperiment3Store = defineStore('experiment3', {
                 touch: 1000,
                 stopRange: {min: 3000, max: 5000},
             },
+            canClick: false,
             id: null,
             monkey_id: null,
             showFigure: false,
@@ -211,11 +221,7 @@ export const useExperiment3Store = defineStore('experiment3', {
             this.data.figure_results = []
 
             this.setActive(true)
-            try {
-                await Timeout.set(100, 'kek')
-            } catch (e) {
-
-            }
+            await tryTimeout(200, 'kek')
 
             while (this.line.current < this.line.maxCount) {
                 await this.sleep()
@@ -233,8 +239,6 @@ export const useExperiment3Store = defineStore('experiment3', {
                 this.text += '<p>Ждем сигнал </p>'
 
 
-
-
                 let params = {
                     angle,
                     x: this.data.figure.x,
@@ -246,47 +250,48 @@ export const useExperiment3Store = defineStore('experiment3', {
                     y_oblast: this.data.oblast.position.y1
                 }
 
+                this.beep();
+                this.text += '<p>Показываем фигуру </p>'
 
-
-                let figureTask = async () => {
-                    this.beep();
-                    this.text += '<p>Показываем фигуру </p>'
-                    let ap = new SuperTimer();
-                    await ap.timeout(() => {
-                        this.showFigure = true
-                        this.text += '<p>Ждем</p>'
-                    }, this.line.showDelay);
-
-                    await this.sleep()
-
-                    ap = new SuperTimer();
-                    await ap.timeout(() => {
-                        this.showFigure = false
-                        this.text += '<p>показали фигуру </p>'
-                        this.showHelper = true
-                    }, this.data.figure.show_time);
-                }
-
+                await tryTimeout(this.line.showDelay, () => {
+                    this.showFigure = true
+                    this.text += '<p>Ждем</p>'
+                })
 
                 let helperTask = async () => {
+                    try {
+                        await Timeout.set(getRandom(this.line.helperRange.min, this.line.helperRange.max), () => {
+                            this.showHelper = true
+                            this.text += '<p>показываем подсказку </p>'
+                        })
+                    } catch (e) {
 
-                    let a = new SuperTimer();
-                    await a.timeout(() => {
-                        this.showHelper = false
-                        this.text += '<p>Отключили подсказку </p>'
-                    }, getRandom(this.line.helperRange.min, this.line.helperRange.max))
-
+                    }
                 }
+
+                // let figureTask = async () => {
+                //
+                //     await this.sleep()
+                //
+                //     await tryTimeout(this.data.figure.show_time, () => {
+                //
+                //         this.text += '<p>показали фигуру </p>'
+                //
+                //     })
+                //
+                // }
 
 
                 let clickTask = async () => {
                     this.timer = new SuperTimer();
+                    this.canClick = true
                     let time = (new Date()).getTime()
                     try {
                         await this.sleep()
                         await this.timer.timeout(() => {
                             this.showFigure = false
                             this.showHelper = false
+                            this.canClick = false
                             this.updateFigure(this.data.figure, {
                                 reaction_time: -1,
                                 ...params
@@ -298,6 +303,7 @@ export const useExperiment3Store = defineStore('experiment3', {
                         await this.sleep()
                         this.showFigure = false
                         this.showHelper = false
+                        this.canClick = false
                         console.log('сработало', localStorage.getItem('react'))
                         let t = (new Date()).getTime() - time
                         if (localStorage.getItem('react') === 'true') {
@@ -314,16 +320,15 @@ export const useExperiment3Store = defineStore('experiment3', {
                     }
                 }
 
-                await Promise.all([figureTask(),helperTask(), clickTask()])
+                await Promise.all([helperTask(), clickTask()])
 
                 this.updateClickPosition(this.data.figure)
                 await this.sleep()
                 this.text += '<p>пауза </p>'
-                let ap = new SuperTimer()
 
-                await ap.timeout(() => {
+                await tryTimeout(getRandom(this.line.stopRange.min, this.line.stopRange.max), 'pause!')
 
-                }, getRandom(this.line.stopRange.min, this.line.stopRange.max))
+
 
             }
             figure.setFigureResults(this.data.figure_results)
