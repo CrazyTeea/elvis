@@ -250,14 +250,6 @@ export const useExperiment3Store = defineStore('experiment3', {
                     y_oblast: this.data.oblast.position.y1
                 }
 
-                this.beep();
-                this.text += '<p>Показываем фигуру </p>'
-
-                await tryTimeout(this.line.showDelay, () => {
-                    this.showFigure = true
-                    this.text += '<p>Ждем</p>'
-                })
-
                 let helperTask = async () => {
                     try {
                         await Timeout.set(getRandom(this.line.helperRange.min, this.line.helperRange.max), () => {
@@ -269,17 +261,19 @@ export const useExperiment3Store = defineStore('experiment3', {
                     }
                 }
 
-                // let figureTask = async () => {
-                //
-                //     await this.sleep()
-                //
-                //     await tryTimeout(this.data.figure.show_time, () => {
-                //
-                //         this.text += '<p>показали фигуру </p>'
-                //
-                //     })
-                //
-                // }
+                let figureTask = async () => {
+
+                     await this.sleep()
+
+                    this.beep();
+                    this.text += '<p>Показываем фигуру </p>'
+
+                    await tryTimeout(this.line.showDelay, () => {
+                        this.showFigure = true
+                        this.text += '<p>Ждем</p>'
+                    })
+
+                 }
 
 
                 let clickTask = async () => {
@@ -320,7 +314,7 @@ export const useExperiment3Store = defineStore('experiment3', {
                     }
                 }
 
-                await Promise.all([helperTask(), clickTask()])
+                await Promise.all([figureTask(), helperTask(), clickTask()])
 
                 this.updateClickPosition(this.data.figure)
                 await this.sleep()
