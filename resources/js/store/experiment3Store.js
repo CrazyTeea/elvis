@@ -13,9 +13,19 @@ const audioCtx = new (window.AudioContext || window.webkitAudioContext || window
 async function tryTimeout(delay, func) {
     try {
         await Timeout.set(delay, func);
-    }catch (e) {
+    } catch (e) {
 
     }
+}
+
+async function waitForChange(variable, initialValue) {
+    return new Promise((resolve) => {
+        setInterval(() => {
+            if (variable !== initialValue) {
+                resolve(variable)
+            }
+        }, 1)
+    });
 }
 
 export const useExperiment3Store = defineStore('experiment3', {
@@ -251,19 +261,18 @@ export const useExperiment3Store = defineStore('experiment3', {
                 }
 
                 let helperTask = async () => {
-                    try {
-                        await Timeout.set(getRandom(this.line.helperRange.min, this.line.helperRange.max), () => {
-                            this.showHelper = true
-                            this.text += '<p>показываем подсказку </p>'
-                        })
-                    } catch (e) {
+                    await tryTimeout(this.line.showDelay, 'wait')
 
-                    }
+                    await tryTimeout(getRandom(this.line.helperRange.min, this.line.helperRange.max), () => {
+                        this.showHelper = true
+                        this.text += '<p>показываем подсказку </p>'
+                    })
+
                 }
 
                 let figureTask = async () => {
 
-                     await this.sleep()
+                    await this.sleep()
 
                     this.beep();
                     this.text += '<p>Показываем фигуру </p>'
@@ -273,7 +282,7 @@ export const useExperiment3Store = defineStore('experiment3', {
                         this.text += '<p>Ждем</p>'
                     })
 
-                 }
+                }
 
 
                 let clickTask = async () => {
@@ -320,8 +329,11 @@ export const useExperiment3Store = defineStore('experiment3', {
                 await this.sleep()
                 this.text += '<p>пауза </p>'
 
-                await tryTimeout(getRandom(this.line.stopRange.min, this.line.stopRange.max), 'pause!')
-
+                await tryTimeout(getRandom(this.line.stopRange.min, this.line.stopRange.max), ()=>{
+                    this.showHelper = false
+                    this.showFigure = false
+                    this.canClick = false
+                })
 
 
             }

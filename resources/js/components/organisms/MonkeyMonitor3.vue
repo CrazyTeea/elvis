@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onDeactivated, onMounted, ref, watch} from "vue";
+import {computed, nextTick, onDeactivated, onMounted, ref, watch} from "vue";
 import {useExperiment3Store} from "@/store/experiment3Store.js";
 import {getRandom} from "@mixins/utils.js";
 
@@ -80,7 +80,8 @@ const setOblastPosition1 = computed(() => {
 
     let obl = `width: ${w}px; height: ${h}px; left: 1px; top: 0px;`;
 
-    if (store.showHelper && store.canClick) {
+
+        if (store.showHelper) {
 
             if (store.data.helper.name === 'figure') {
                 figureLeft = true
@@ -99,7 +100,10 @@ const setOblastPosition1 = computed(() => {
                 obl += `border-width :${store.data.helper.thickness}px; border: rgba(241, 213, 0, ${l}) solid;`
             }
 
-    }
+        }
+
+
+
 
     return obl;
 })
@@ -116,7 +120,9 @@ const setOblastPosition3 = computed(() => {
     figureRight = false
 
     let obl = `width: ${w}px; height: ${h}px; left: ${left}px; top: 0px;`;
-    if (store.showHelper && store.canClick) {
+
+
+        if (store.showHelper) {
 
             if (store.data.helper.name === 'figure') {
                 figureRight = true
@@ -125,8 +131,8 @@ const setOblastPosition3 = computed(() => {
             }
             if (store.data.helper.name === 'oblast') {
                 let l = (store.data.figure.angle < 90 && store.data.figure.angle >= 0)
-                    ||
-                    (store.data.figure.angle > 200) ? store.data.helper.brTrue / 100 : store.data.helper.brFalse / 100
+                ||
+                (store.data.figure.angle > 200) ? store.data.helper.brTrue / 100 : store.data.helper.brFalse / 100
                 obl += `background-color: rgba(255, 255, 255, ${l}); `
             }
 
@@ -135,7 +141,9 @@ const setOblastPosition3 = computed(() => {
                 obl += `border-width :${store.data.helper.thickness}px; border: rgba(241, 213, 0, ${l}) solid;`
             }
 
-    }
+        }
+
+
 
     return obl
 })
@@ -147,7 +155,7 @@ const setOblastPosition3 = computed(() => {
     <div class="pa-1 h-100 w-100 ">
         <div v-if="active" :style="`background-color: rgb(${color} ${color} ${color});`"
              class="wh position-relative border-dashed">
-            <div oncontextmenu="return false" @click="event=>sendStop(event, 'left')" :style="setOblastPosition1"
+            <div v-if="store.showFigure" oncontextmenu="return false" @click="event=>sendStop(event, 'left')" :style="setOblastPosition1"
                  class="position-absolute ">
 
                 <div  class="position-relative">
@@ -173,7 +181,7 @@ const setOblastPosition3 = computed(() => {
 
 
             </div>
-            <div oncontextmenu="return false" @click="event=>sendStop(event, 'right')" :style="setOblastPosition3"
+            <div v-if="store.showFigure" oncontextmenu="return false" @click="event=>sendStop(event, 'right')" :style="setOblastPosition3"
                  class="position-absolute ">
                 <div  class="position-relative">
                     <div :style="getOblastPos()" class="position-absolute kek2">
