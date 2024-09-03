@@ -63,8 +63,8 @@ type Monkey {
     updated_at: DateTime,
     name: String
     elvis_id: String
-    age: Int
-    weight: Float
+    age: String
+    weight: String
     comment: String
     experiments: [Experiment] @hasMany
 }
