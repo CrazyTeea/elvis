@@ -98,6 +98,10 @@ type Figure {
     y: Int
     w: Int
     h: Int,
+    x_v: Int
+    y_v: Int
+    y_h: Int
+    x_h: Int,
     xx: String
     yy: String
     ww: String

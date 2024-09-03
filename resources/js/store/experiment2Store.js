@@ -208,24 +208,28 @@ export const useExperiment2Store = defineStore('experiment2', {
                 this.beep();
                 this.comment += "<p>Сигнал</p>"
 
-                console.log('ждем', this.line.startDelay)
-                let time = (new Date()).getTime()
 
-                try {
-                    await Timeout.set(this.line.startDelay, () => {
-                        this.comment += "<p>Сигнал отправлен</p>"
-                        this.sendStimul()
-                    })
-                } catch (e) {
+                let time, end = 0;
 
+                let stimulTask = async ()=> {
+                    console.log('ждем', this.line.startDelay)
+                    let time = (new Date()).getTime()
+                    try {
+                        await Timeout.set(this.line.startDelay, () => {
+                            this.comment += "<p>Сигнал отправлен</p>"
+                            this.sendStimul()
+                            this.line.canClick = true
+                        })
+                    } catch (e) {
+
+                    }
+
+                    let end = (new Date()).getTime() - time
+                    console.log('закончили ждем', this.line.startDelay, end)
+
+
+                    this.comment += "<p>Сигнал прошел</p>"
                 }
-
-                let end = (new Date()).getTime() - time
-                console.log('закончили ждем', this.line.startDelay, end)
-
-
-                this.comment += "<p>Сигнал прошел</p>"
-
 
                 let helperTask = async () => {
                     this.comment += "<p>стимул старт</p>"
@@ -240,7 +244,7 @@ export const useExperiment2Store = defineStore('experiment2', {
                         await Timeout.set(t, () => {
                                 this.comment += "<p>стимул</p>"
                                 this.line.showHelpers = true
-                                this.line.canClick = true
+
                             })
                     } catch (e) {
 
@@ -284,7 +288,7 @@ export const useExperiment2Store = defineStore('experiment2', {
 
                 this.comment += "<p>ожидаем функции</p>"
 
-                await Promise.all([helperTask(), touchTask()])
+                await Promise.all([stimulTask(), helperTask(), touchTask()])
                 this.comment += "<p>конец функции</p>"
 
                 try {

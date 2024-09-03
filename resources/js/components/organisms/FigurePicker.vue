@@ -13,7 +13,11 @@ const options = defineProps({
         color: Array,
         angle: Array,
         angle_value: Number,
-        show_time: Number
+        show_time: Number,
+        x_h: Number,
+        y_h: Number,
+        x_v: Number,
+        y_v: Number,
     },
     anglePicker: Boolean,
     experiment3: Boolean
@@ -187,6 +191,32 @@ const round = computed(() => {
                 <v-card v-if="experiment3" class="rounded-pill" width="300">
                     <v-card-text class="d-flex justify-space-around">
                         <input type="number" v-model="values.angle_value">
+                    </v-card-text>
+                </v-card>
+                <v-card v-if="experiment3" class="rounded-pill">
+                    <v-card-text class="d-flex justify-center">
+                        <div>
+                            горизонтальная
+                            <div>
+                                x<input type="number" v-model="values.x_h">
+                            </div>
+                            <div>
+                                y<input type="number" v-model="values.y_h">
+                            </div>
+
+                        </div>
+                        <div>
+                            вертикальная
+                            <div>
+                                x<input type="number" v-model="values.x_v">
+                            </div>
+                            <div>
+                                y<input type="number" v-model="values.y_v">
+                            </div>
+
+
+                        </div>
+
                     </v-card-text>
                 </v-card>
                 <v-card v-if="experiment3" class="rounded-pill" width="300">

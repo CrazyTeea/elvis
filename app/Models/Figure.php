@@ -15,6 +15,10 @@ use Illuminate\Support\Carbon;
  * @property float $y
  * @property float $w
  * @property float $h
+ * @property float $x_h
+ * @property float $y_h
+ * @property float $x_v
+ * @property float $y_v
  * @property string $color
  * @property float $brightness
  * @property Carbon|null $created_at
@@ -97,8 +101,16 @@ class Figure extends Model
         'hh',
         'x',
         'y',
-        'w', 'x_oblast','y_oblast',
-        'h','x_click', 'y_click',
+        'w',
+        'x_v',
+        'y_v',
+        'x_h',
+        'y_h',
+        'x_oblast',
+        'y_oblast',
+        'h',
+        'x_click',
+        'y_click',
         'color',
         'brightness',
         'experiment_id',

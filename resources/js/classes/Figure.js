@@ -30,7 +30,11 @@ export class Figure {
                 yy: [],
                 ww: [],
                 hh: [],
-                show_time:fig.options.show_time
+                x_h:fig.options.x_h,
+                y_h:fig.options.y_h,
+                x_v:fig.options.x_v,
+                y_v:fig.options.y_v,
+                show_time: fig.options.show_time
             })
         }
     }
@@ -69,6 +73,10 @@ export class Figure {
             'y',
             'w',
             'h',
+            'x_h',
+            'y_h',
+            'x_v',
+            'y_v',
             'color',
             'brightness',
             'created_at',
@@ -113,7 +121,7 @@ export class Figure {
         this.figure_results = values
     }
 
-    generate(oblast) {
+    generate(oblast, exp3 = false) {
         for (let f of this.figures) {
 
             let y2 = oblast.y2 - oblast.y1;
@@ -122,7 +130,7 @@ export class Figure {
             f.brightness = getRandom(f.brightness_min, f.brightness_max)
 
             if (this.exp_number === 3) {
-                f.angle+=f.angle_value
+                f.angle += f.angle_value
             }
 
             let i = 0;
@@ -140,16 +148,26 @@ export class Figure {
                     f.h = getRandom(f.size_min, f.size_max);
                 }
 
-                let x2 = oblast.x2 - oblast.x1;
+                let x, y = 0;
 
-                let x = getRandom(0, x2)
-                while (x <= 0 || x > x2 || x + f.w >= x2) {
+                if (!exp3) {
+                    let x2 = oblast.x2 - oblast.x1;
                     x = getRandom(0, x2)
-                }
-                let y = getRandom(0, y2)
-                while (y >= y2 || y <= 0 || y + f.h >= y2) {
+                    while (x <= 0 || x > x2 || x + f.w >= x2) {
+                        x = getRandom(0, x2)
+                    }
                     y = getRandom(0, y2)
+                    while (y >= y2 || y <= 0 || y + f.h >= y2) {
+                        y = getRandom(0, y2)
+                    }
+                    f.x = x;
+                    f.y = y;
+                } else {
+                    x = f.angle == 0 ? f.x_h : f.x_v
+                    y = f.angle == 0 ? f.y_h : f.y_v
                 }
+
+
                 f.x = x;
                 f.y = y;
                 f.xx.push(x)

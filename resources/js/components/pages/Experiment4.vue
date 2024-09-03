@@ -36,10 +36,6 @@ const btns = ref({
             angle: [0, 90],
             xx: [],
             yy: [],
-            x_h: 200,
-            y_h: 200,
-            x_v: 200,
-            y_v: 200,
             angle_value: 0,
             show_time: 2000
         },)
@@ -170,7 +166,7 @@ const startExperiment = async () => {
 
 
     let figure = new Figure({id: exp.id, number: 3}, figures.value)
-    figure.generate(oblast.value.options.position, true)
+    figure.generate(oblast.value.options.position)
     await figure.store()
 
     let t = new SuperTimer()
