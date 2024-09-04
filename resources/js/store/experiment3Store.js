@@ -360,8 +360,10 @@ export const useExperiment3Store = defineStore('experiment3', {
 
             try {
                 let figure = this.data.figure
-                let {color, w: width, h, angle, brightness, x, y} = figure
+                let {color, w: width, h, angle, brightness, x_h, y_h, x_v,y_v} = figure
 
+                let x = angle == 0 ? x_v: x_h;
+                let y = angle == 0 ? y_v: y_h;
 
                 style = `background-color: ${color};filter: brightness(${brightness}%);width: ${width}px; height: ${h}px; left: ${x}px; top: ${y}px; transform:rotate(${angle}deg)`;
 
