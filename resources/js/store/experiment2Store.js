@@ -103,7 +103,7 @@ export const useExperiment2Store = defineStore('experiment2', {
         sendStimul() {
             try {
                 axios.post(`/experiment/send-com`, {...this.stimul, position: this.position})
-            }catch (e) {
+            } catch (e) {
 
             }
 
@@ -209,48 +209,46 @@ export const useExperiment2Store = defineStore('experiment2', {
                 this.comment += "<p>Сигнал</p>"
 
 
-                let time, end = 0;
+                console.log('ждем', this.line.startDelay)
+                let time = (new Date()).getTime()
+                try {
+                    await Timeout.set(this.line.startDelay, () => {
+                        this.comment += "<p>Сигнал отправлен</p>"
+                        this.line.canClick = true
+                        this.sendStimul()
 
-                let stimulTask = async ()=> {
-                    console.log('ждем', this.line.startDelay)
-                    let time = (new Date()).getTime()
-                    try {
-                        await Timeout.set(this.line.startDelay, () => {
-                            this.comment += "<p>Сигнал отправлен</p>"
-                            this.sendStimul()
-                            this.line.canClick = true
-                        })
-                    } catch (e) {
+                    })
+                } catch (e) {
 
-                    }
-
-                    let end = (new Date()).getTime() - time
-                    console.log('закончили ждем', this.line.startDelay, end)
-
-
-                    this.comment += "<p>Сигнал прошел</p>"
                 }
+
+                let end = (new Date()).getTime() - time
+                console.log('закончили ждем', this.line.startDelay, end)
+
+
+                this.comment += "<p>Сигнал прошел</p>"
+
 
                 let helperTask = async () => {
                     this.comment += "<p>стимул старт</p>"
 
                     let t = (+this.stimul.length) + getRandom(this.line.startHelp.min, this.line.startHelp.max);
 
-                    console.log('подсказка через',t)
+                    console.log('подсказка через', t)
 
                     time = (new Date()).getTime()
 
                     try {
                         await Timeout.set(t, () => {
-                                this.comment += "<p>стимул</p>"
-                                this.line.showHelpers = true
-
-                            })
+                            this.comment += "<p>стимул</p>"
+                            this.line.showHelpers = true
+                            this.line.canClick = true
+                        })
                     } catch (e) {
 
                     }
                     end = (new Date()).getTime() - time
-                    console.log('подсказка показана',t, end)
+                    console.log('подсказка показана', t, end)
 
                     this.comment += "<p>стимул конец</p>"
                 }
@@ -270,6 +268,8 @@ export const useExperiment2Store = defineStore('experiment2', {
                         let t = (new Date()).getTime() - time
                         this.comment += "<p>тыкнул</p>"
                         reaction = localStorage.getItem('react') === 'true' ? t : -1
+                        this.line.showHelpers = false
+                        this.line.canClick = false
                         if (localStorage.getItem('react') === 'true') {
                             //this.beep(500, 500)
                             const audio = new Audio(audioFile);
@@ -277,8 +277,7 @@ export const useExperiment2Store = defineStore('experiment2', {
                             axios.post('/experiment/send-com', {name: 'feed',})
                         }
 
-                        this.line.showHelpers = false
-                        this.line.canClick = false
+
                     }
                     end = (new Date()).getTime() - time
                     console.log('ожидание все', t, end)
@@ -288,11 +287,14 @@ export const useExperiment2Store = defineStore('experiment2', {
 
                 this.comment += "<p>ожидаем функции</p>"
 
-                await Promise.all([stimulTask(), helperTask(), touchTask()])
+                await Promise.all([helperTask(), touchTask()])
                 this.comment += "<p>конец функции</p>"
 
                 try {
-                    await Timeout.set(getRandom(this.line.stopDelay.min, this.line.stopDelay.max), 'Stop!!!')
+                    await Timeout.set(getRandom(this.line.stopDelay.min, this.line.stopDelay.max), ()=>{
+                        this.line.showHelpers = false
+                        this.line.canClick = false
+                    })
                 } catch (e) {
 
                 }
