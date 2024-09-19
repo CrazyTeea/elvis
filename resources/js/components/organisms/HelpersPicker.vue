@@ -197,6 +197,17 @@ let btnHandler = function (name) {
                     </div>
                 </v-card>
             </div>
+            <div v-if="experiment3 && typeText === 'oblast'" class="d-flex mt-5 justify-center ga-5">
+                <v-card class="rounded1 shadow pa-2" width="200">
+                    <div class="h-100 align-content-center">
+                        <div class="d-flex justify-center">
+                            <span style="font-size: 12px">Отступ</span>
+                            <input style="width: 55px; font-size: 12px" class="ml-2" type="number"
+                                   v-model="crntType.offset">
+                        </div>
+                    </div>
+                </v-card>
+            </div>
             <div class="d-flex mt-5 justify-center ga-5">
                 <v-card v-if="typeText === 'ramka' || (!experiment3 && typeText === 'oblast')"
                         class="rounded1 shadow pa-2"

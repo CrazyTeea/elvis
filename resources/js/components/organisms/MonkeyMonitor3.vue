@@ -1,5 +1,5 @@
 <script setup>
-import {computed, nextTick, onDeactivated, onMounted, ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import {useExperiment3Store} from "@/store/experiment3Store.js";
 import {getRandom} from "@mixins/utils.js";
 
@@ -63,9 +63,8 @@ function getOblastPos(props) {
     let y = store.data.oblast.position.y1;
     let w = store.data.oblast.position.x2 - store.data.oblast.position.x1
     let h = store.data.oblast.position.y2 - store.data.oblast.position.y1
-    console.log({x,y,w,h})
-    if(props){
-        return {x,y,w,h}
+    if (props) {
+        return {x, y, w, h}
     }
     return `left:${x}px;top:${y}px;width:${w}px;height:${h}px;`
 }
@@ -78,34 +77,7 @@ const setOblastPosition1 = computed(() => {
     figureLeft = false;
     figureRight = false
 
-    let obl = `width: ${w}px; height: ${h}px; left: 1px; top: 0px;`;
-
-
-        if (store.showHelper) {
-
-            if (store.data.helper.name === 'figure') {
-                figureLeft = true
-                let l = store.data.helper.br / 100
-                obl += `background-color: rgba(241, 213, 0, ${l}); `
-            }
-
-            if (store.data.helper.name === 'oblast') {
-                let l = store.data.figure.angle >= 45 ? store.data.helper.brTrue / 100 : store.data.helper.brFalse / 100
-
-                obl += `background-color: rgba(255, 255, 255, ${l}); `
-            }
-
-            if (store.data.helper.name === 'ramka') {
-                let l = store.data.helper.br / 100
-                obl += `border-width :${store.data.helper.thickness}px; border: rgba(241, 213, 0, ${l}) solid;`
-            }
-
-        }
-
-
-
-
-    return obl;
+    return `width: ${w}px; height: ${h}px; left: 1px; top: 0px;`;
 })
 const setOblastPosition2 = computed(() => {
     const w = window.innerWidth / 3
@@ -114,38 +86,86 @@ const setOblastPosition2 = computed(() => {
 })
 const setOblastPosition3 = computed(() => {
     const w = window.innerWidth / 3
-    const left = w * 2
     const h = window.innerHeight - 15
-    figureLeft = false
-    figureRight = false
+    let left = w * 2
 
-    let obl = `width: ${w}px; height: ${h}px; left: ${left}px; top: 0px;`;
+    return `width: ${w}px; height: ${h}px; left: ${left}px; top: 0px;`
+})
 
 
-        if (store.showHelper) {
+let showHelperLeft = computed(() => {
+    let {x,y,w,h} = getOblastPos(true);
 
-            if (store.data.helper.name === 'figure') {
-                figureRight = true
-                let l = store.data.helper.br / 100
-                obl += `background-color: rgba(241, 213, 0, ${l}); `
-            }
-            if (store.data.helper.name === 'oblast') {
-                let l = (store.data.figure.angle < 90 && store.data.figure.angle >= 0)
-                ||
-                (store.data.figure.angle > 200) ? store.data.helper.brTrue / 100 : store.data.helper.brFalse / 100
-                obl += `background-color: rgba(255, 255, 255, ${l}); `
-            }
+    let left = 0
 
-            if (store.data.helper.name === 'ramka') {
-                let l = store.data.helper.br / 100
-                obl += `border-width :${store.data.helper.thickness}px; border: rgba(241, 213, 0, ${l}) solid;`
-            }
+    let obl = ` height: ${h}px; top: 0px;`;
 
+    figureLeft = false;
+    figureRight = false;
+
+    if (store.showHelper) {
+
+        if (store.data.helper.name === 'figure') {
+            figureLeft = true
+            let l = store.data.helper.br / 100
+            obl += `background-color: rgba(241, 213, 0, ${l}); `
         }
 
+        if (store.data.helper.name === 'oblast') {
+            left = -store.data.helper.offset;
+            w -= left
+            let l = store.data.figure.angle == 90 ? store.data.helper.brTrue / 100 : store.data.helper.brFalse / 100
+
+            obl += `background-color: rgba(255, 255, 255, ${l}); left: ${left}px;`
+        }
+
+        if (store.data.helper.name === 'ramka') {
+            let l = store.data.helper.br / 100
+            obl += `border-width :${store.data.helper.thickness}px; border: rgba(241, 213, 0, ${l}) solid;`
+        }
+
+    }
+    obl += `width: ${w}px;`;
+
+    return obl;
+})
+
+let showHelperRight = computed(() => {
+    let {x,y,w,h} = getOblastPos(true);
+
+    let obl = ` height: ${h}px; top: 0px;`;
+    let left = 0;
+
+    figureLeft = false;
+    figureRight = false;
+
+    if (store.showHelper) {
+
+        if (store.data.helper.name === 'figure') {
+            figureLeft = true
+            let l = store.data.helper.br / 100
+            obl += `background-color: rgba(241, 213, 0, ${l}); `
+        }
+
+        if (store.data.helper.name === 'oblast') {
+            left = store.data.helper.offset;
+            w -= left;
+            let l = store.data.figure.angle == 0 ? store.data.helper.brTrue / 100 : store.data.helper.brFalse / 100
+
+            obl += `background-color: rgba(255, 255, 255, ${l}); left: ${left}px;`
+        }
+
+        if (store.data.helper.name === 'ramka') {
+            let l = store.data.helper.br / 100
+            obl += `border-width :${store.data.helper.thickness}px; border: rgba(241, 213, 0, ${l}) solid;`
+        }
+
+    }
+    obl += `width: ${w}px;`
+
+    return obl;
 
 
-    return obl
 })
 
 
@@ -154,43 +174,46 @@ const setOblastPosition3 = computed(() => {
 <template>
     <div class="pa-1 h-100 w-100 ">
         <div v-if="active" :style="`background-color: rgb(${color} ${color} ${color});`"
-             class="wh position-relative border-dashed">
-            <div v-if="store.showFigure" oncontextmenu="return false" @click="event=>sendStop(event, 'left')" :style="setOblastPosition1"
+             class="wh position-absolute border-dashed">
+            <div v-if="store.showFigure" oncontextmenu="return false" @click="event=>sendStop(event, 'left')"
+                 :style="setOblastPosition1"
                  class="position-absolute ">
-
-                <div  class="position-relative">
                     <div :style="getOblastPos()" class="position-absolute kek2">
 
                         <div v-if="figureLeft" class="position-relative" :style="store.getFigurePositionCenter(true)">
 
                         </div>
+                        <div class="position-relative border-dashed" :style="showHelperLeft">
+                            helper left
+                        </div>
                     </div>
-                </div>
-
-
             </div>
             <div oncontextmenu="return false" :style="setOblastPosition2"
                  class="position-absolute">
-                <div  class="position-relative">
+                <div class="position-relative">
                     <div :style="getOblastPos()" class="position-absolute kek2">
                         <div class="position-relative" :style="store.getFigurePositionCenter()">
-
+                            {{ store.data.figure.angle }}
                         </div>
                     </div>
                 </div>
 
 
             </div>
-            <div v-if="store.showFigure" oncontextmenu="return false" @click="event=>sendStop(event, 'right')" :style="setOblastPosition3"
+            <div v-if="store.showFigure" oncontextmenu="return false" @click="event=>sendStop(event, 'right')"
+                 :style="setOblastPosition3"
                  class="position-absolute ">
-                <div  class="position-relative">
-                    <div :style="getOblastPos()" class="position-absolute kek2">
+
+                    <div :style="getOblastPos()" class="position-absolute  kek2">
 
                         <div v-if="figureRight" class="position-relative" :style="store.getFigurePositionCenter(true)">
 
                         </div>
+                        <div class="position-relative border-dashed" :style="showHelperRight">
+                            helper right
+                        </div>
                     </div>
-                </div>
+
 
             </div>
         </div>
