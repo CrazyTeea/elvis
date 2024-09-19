@@ -183,7 +183,7 @@ let showHelperRight = computed(() => {
                         <div v-if="figureLeft" class="position-relative" :style="store.getFigurePositionCenter(true)">
 
                         </div>
-                        <div class="position-relative border-dashed" :style="showHelperLeft">
+                        <div class="position-relative " :style="showHelperLeft">
                             helper left
                         </div>
                     </div>
@@ -193,7 +193,6 @@ let showHelperRight = computed(() => {
                 <div class="position-relative">
                     <div :style="getOblastPos()" class="position-absolute kek2">
                         <div class="position-relative" :style="store.getFigurePositionCenter()">
-                            {{ store.data.figure.angle }}
                         </div>
                     </div>
                 </div>
@@ -209,7 +208,7 @@ let showHelperRight = computed(() => {
                         <div v-if="figureRight" class="position-relative" :style="store.getFigurePositionCenter(true)">
 
                         </div>
-                        <div class="position-relative border-dashed" :style="showHelperRight">
+                        <div class="position-relative" :style="showHelperRight">
                             helper right
                         </div>
                     </div>
