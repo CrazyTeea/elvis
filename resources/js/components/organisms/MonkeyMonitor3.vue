@@ -94,7 +94,8 @@ const setOblastPosition3 = computed(() => {
 
 
 let showHelperLeft = computed(() => {
-    let {x,y,w,h} = getOblastPos(true);
+    let w = window.innerWidth / 3
+    const h = window.innerHeight - 15
 
     let left = 0
 
@@ -113,8 +114,8 @@ let showHelperLeft = computed(() => {
 
         if (store.data.helper.name === 'oblast') {
             left = -store.data.helper.offset;
-            w -= left
-            let l = store.data.figure.angle == 90 ? store.data.helper.brTrue / 100 : store.data.helper.brFalse / 100
+            w += left
+            let l = store.data.figure.angle == 90 ? (store.data.helper.brTrue / 100) : (store.data.helper.brFalse / 100)
 
             obl += `background-color: rgba(255, 255, 255, ${l}); left: ${left}px;`
         }
@@ -131,7 +132,8 @@ let showHelperLeft = computed(() => {
 })
 
 let showHelperRight = computed(() => {
-    let {x,y,w,h} = getOblastPos(true);
+    let w = window.innerWidth / 3
+    const h = window.innerHeight - 15
 
     let obl = ` height: ${h}px; top: 0px;`;
     let left = 0;
@@ -150,7 +152,7 @@ let showHelperRight = computed(() => {
         if (store.data.helper.name === 'oblast') {
             left = store.data.helper.offset;
             w -= left;
-            let l = store.data.figure.angle == 0 ? store.data.helper.brTrue / 100 : store.data.helper.brFalse / 100
+            let l = store.data.figure.angle == 0 ? (store.data.helper.brTrue / 100) : (store.data.helper.brFalse / 100)
 
             obl += `background-color: rgba(255, 255, 255, ${l}); left: ${left}px;`
         }
@@ -178,15 +180,16 @@ let showHelperRight = computed(() => {
             <div v-if="store.showFigure" oncontextmenu="return false" @click="event=>sendStop(event, 'left')"
                  :style="setOblastPosition1"
                  class="position-absolute ">
-                    <div :style="getOblastPos()" class="position-absolute kek2">
 
-                        <div v-if="figureLeft" class="position-relative" :style="store.getFigurePositionCenter(true)">
+                <div :style="getOblastPos()" class="position-absolute kek2">
 
-                        </div>
-                        <div class="position-relative " :style="showHelperLeft">
-                            helper left
-                        </div>
+                    <div v-if="figureLeft" class="position-relative" :style="store.getFigurePositionCenter(true)">
+
                     </div>
+
+                </div>
+                <div class="position-relative " :style="showHelperLeft">
+                </div>
             </div>
             <div oncontextmenu="return false" :style="setOblastPosition2"
                  class="position-absolute">
@@ -203,15 +206,16 @@ let showHelperRight = computed(() => {
                  :style="setOblastPosition3"
                  class="position-absolute ">
 
-                    <div :style="getOblastPos()" class="position-absolute  kek2">
 
-                        <div v-if="figureRight" class="position-relative" :style="store.getFigurePositionCenter(true)">
+                <div :style="getOblastPos()" class="position-absolute  kek2">
 
-                        </div>
-                        <div class="position-relative" :style="showHelperRight">
-                            helper right
-                        </div>
+                    <div v-if="figureRight" class="position-relative" :style="store.getFigurePositionCenter(true)">
+
                     </div>
+
+                </div>
+                <div class="position-relative" :style="showHelperRight">
+                </div>
 
 
             </div>
